@@ -43,8 +43,8 @@ Play the game in your browser — no install required:
 Because the entire game is built as a **single, self-contained file**, there are no complex build tools, compilers, or server setups required\!
 
 1. **Clone the Repository:**  
-   git clone [https://github.com/inhumba/Animal-Memory-Match.git](https://github.com/inhumba/Animal-Memory-Match.git)  
-   cd animal-memory-match
+   git clone https://github.com/inhumba/Animal-Memory-Match.git
+   cd Animal-Memory-Match
 
 2. **Launch the Game:**  
    Simply double-click the index.html file or open it directly inside any modern web browser (Chrome, Safari, Edge, Firefox).
