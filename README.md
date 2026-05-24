@@ -2,6 +2,12 @@
 
 A delightful, highly interactive, and educational **Memory Matching Game** designed specifically for children. Built entirely from scratch using a high-performance HTML5 \<canvas\> rendering engine, Tailwind CSS, and native Web APIs, this single-file web app offers a premium, kid-friendly gaming experience across all devices.
 
+## **🎮 Live Demo**
+
+Play the game in your browser — no install required:
+
+**👉 [Animal Memory Match — Live Demo](https://inhumba.github.io/Animal-Memory-Match/)**
+
 ## **✨ Features**
 
 * **🎮 4 Immersive Animal Themes:**  
@@ -37,7 +43,7 @@ A delightful, highly interactive, and educational **Memory Matching Game** desig
 Because the entire game is built as a **single, self-contained file**, there are no complex build tools, compilers, or server setups required\!
 
 1. **Clone the Repository:**  
-   git clone \[https://github.com/YOUR\_USERNAME/animal-memory-match.git\](https://github.com/YOUR\_USERNAME/animal-memory-match.git)  
+   git clone [https://github.com/inhumba/Animal-Memory-Match.git](https://github.com/inhumba/Animal-Memory-Match.git)  
    cd animal-memory-match
 
 2. **Launch the Game:**  
