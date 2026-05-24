@@ -65,6 +65,8 @@ This project is open-source and free to use or modify. Have fun playing and lear
 
 ## **📋 Recent Updates**
 
+* **Favicon:** Added `favicon.ico` at the project root and linked it in `index.html` for browser tab branding.
+* **Mobile layout:** Fixed menu overlap on phones/tablets by switching to `min-h-dvh`, natural-flow setup screen, and responsive game board toggling.
 * **Typography:** Playful UI font updated from Fredoka One to **Margarine** (Google Fonts); Quicksand remains for body text.
 * **Difficulty modes:** Top tier renamed from **Hardest** to **Expert** (12 pairs, 6×4 grid).
 
