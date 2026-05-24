@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Memory Match - Kids Adventure!</title>
+    <!-- Tailwind CSS for sleek modern layout and styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for a playful, kid-friendly look -->
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #f0f4ff;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .font-playful {
+            font-family: 'Margarine', cursive;
+        }
+        /* Custom bubbly scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #eef2ff;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7d2fe;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a5b4fc;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-between p-3 md:p-6 bg-gradient-to-b from-indigo-100 via-purple-50 to-pink-100 overflow-x-hidden">
+
+    <!-- Header & Scoreboard HUD -->
+    <header class="w-full max-w-4xl bg-white/80 backdrop-blur-md rounded-2xl md:rounded-3xl p-4 shadow-xl border-4 border-white flex flex-wrap items-center justify-center lg:justify-between gap-4 z-10">
+        <div class="w-full lg:w-auto flex items-center justify-center gap-3">
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-400 p-2.5 rounded-2xl shadow-md transform -rotate-6 hover:rotate-6 transition-transform">
+                <span class="text-3xl">🦁</span>
+            </div>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-playful text-indigo-600 tracking-wide drop-shadow-sm leading-none">Animal Match</h1>
+                <p class="text-xs md:text-sm font-bold text-indigo-400 mt-1">Memory adventure for kids!</p>
+            </div>
+        </div>
+
+        <!-- HUD Statistics & Controls -->
+        <div class="w-full lg:w-auto flex items-center justify-center gap-2 md:gap-4 flex-wrap">
+            <div class="bg-pink-100 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-2 border-pink-200 text-center">
+                <span class="text-xs font-bold text-pink-500 block uppercase tracking-wider">Flips</span>
+                <span id="moves-val" class="text-xl md:text-2xl font-playful text-pink-600">0</span>
+            </div>
+            <div class="bg-teal-100 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-2 border-teal-200 text-center">
+                <span class="text-xs font-bold text-teal-500 block uppercase tracking-wider">Pairs Left</span>
+                <span id="pairs-val" class="text-xl md:text-2xl font-playful text-teal-600">0</span>
+            </div>
+            <div class="bg-amber-100 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-2 border-amber-200 text-center hidden sm:block">
+                <span class="text-xs font-bold text-amber-500 block uppercase tracking-wider">Best Score</span>
+                <span id="best-val" class="text-xl md:text-2xl font-playful text-amber-600">-</span>
+            </div>
+
+            <!-- Start New Game Button -->
+            <button onclick="resetToMenu()" class="p-2.5 md:px-4 md:py-2.5 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white font-playful text-sm rounded-xl transition-all shadow-md transform hover:scale-105 active:scale-95 flex items-center gap-1.5 border-2 border-emerald-300" title="Start New Game">
+                <span>🔄</span>
+                <span class="hidden md:inline">New Game</span>
+            </button>
+
+            <!-- Audio Control -->
+            <button id="audio-toggle" class="p-2.5 bg-indigo-100 hover:bg-indigo-200 border-2 border-indigo-200 text-indigo-600 rounded-xl transition-all shadow-sm flex items-center justify-center transform hover:scale-105 active:scale-95" title="Mute/Unmute Sounds">
+                <svg id="audio-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Game Workspace -->
+    <main class="relative w-full max-w-4xl flex-grow my-4 flex flex-col items-center justify-center">
+        <!-- Interactive Theme / Setup Screen overlay -->
+        <div id="setup-screen" class="absolute inset-0 bg-white/95 backdrop-blur-lg rounded-3xl border-4 border-indigo-200 shadow-2xl flex flex-col justify-center items-center p-6 md:p-12 z-20 transition-all duration-300">
+            <div class="text-center max-w-2xl">
+                <h2 class="text-3xl md:text-5xl font-playful text-indigo-700 mb-2 tracking-wide drop-shadow-sm">Choose Your Adventure!</h2>
+                <p class="text-sm md:text-base font-bold text-indigo-400 mb-6">Pick your favorite animals and difficulty to start matching!</p>
+                
+                <!-- Theme Selectors -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-playful text-indigo-600 mb-3 flex items-center justify-center gap-2">
+                        <span>✨</span> Theme Category <span>✨</span>
+                    </h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <button onclick="selectTheme('safari')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-safari">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦁</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Safari</span>
+                        </button>
+                        <button onclick="selectTheme('forest')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-forest">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦊</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Forest</span>
+                        </button>
+                        <button onclick="selectTheme('ocean')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-ocean">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🐬</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Ocean</span>
+                        </button>
+                        <button onclick="selectTheme('pets')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-pets">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🐶</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Pets</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Difficulty Selectors -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-playful text-indigo-600 mb-3 flex items-center justify-center gap-2">
+                        <span>🌟</span> Match Difficulty <span>🌟</span>
+                    </h3>
+                    <div class="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+                        <button onclick="selectDifficulty('easy')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-green-200 bg-green-50 hover:bg-green-100 text-green-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-easy">
+                            Easy (3 Pairs - 2x3)
+                        </button>
+                        <button onclick="selectDifficulty('medium')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-medium">
+                            Medium (6 Pairs - 3x4)
+                        </button>
+                        <button onclick="selectDifficulty('hard')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-hard">
+                            Hard (8 Pairs - 4x4)
+                        </button>
+                        <button onclick="selectDifficulty('expert')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-expert">
+                            Expert (12 Pairs - 6x4)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Big Magical Play Button -->
+                <button onclick="startGame()" class="px-12 py-4 md:py-5 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 hover:from-yellow-500 hover:to-pink-600 text-white font-playful text-2xl md:text-3xl rounded-full shadow-2xl transform hover:scale-105 active:scale-95 transition-all border-4 border-white inline-flex items-center gap-3">
+                    Let's Play! 🚀
+                </button>
+            </div>
+        </div>
+
+        <!-- Canvas Container -->
+        <div class="relative w-full aspect-[4/3] bg-white rounded-3xl border-4 md:border-8 border-indigo-400/90 shadow-2xl overflow-hidden flex items-center justify-center">
+            <canvas id="game-canvas" class="w-full h-full block cursor-pointer"></canvas>
+        </div>
+
+        <!-- Victory Popup Overlay -->
+        <div id="victory-screen" class="absolute inset-0 bg-indigo-950/75 backdrop-blur-md rounded-3xl flex justify-center items-center p-6 z-30 transition-all duration-500 opacity-0 pointer-events-none scale-95">
+            <div class="bg-white rounded-3xl p-6 md:p-10 max-w-md w-full text-center border-4 border-yellow-400 shadow-2xl transform scale-90 transition-all duration-500 relative overflow-hidden" id="victory-card">
+                
+                <!-- Confetti Cannon graphics inside HTML -->
+                <div class="absolute -top-10 -left-10 text-4xl animate-bounce">🎉</div>
+                <div class="absolute -top-10 -right-10 text-4xl animate-bounce delay-150">🎉</div>
+                
+                <h2 class="text-4xl font-playful text-yellow-500 mb-1 drop-shadow">Amazing Job!</h2>
+                <p class="text-indigo-400 font-bold text-sm mb-6 uppercase tracking-wider">Puzzle Completed Successfully</p>
+
+                <!-- Stars Render Area -->
+                <div class="flex justify-center gap-3 mb-6" id="victory-stars">
+                    <span class="text-5xl text-gray-300 filter drop-shadow" id="star-1">★</span>
+                    <span class="text-6xl text-gray-300 filter drop-shadow -mt-2" id="star-2">★</span>
+                    <span class="text-5xl text-gray-300 filter drop-shadow" id="star-3">★</span>
+                </div>
+
+                <!-- Statistics List -->
+                <div class="bg-indigo-50 rounded-2xl p-4 border-2 border-indigo-100 mb-6 text-left space-y-2">
+                    <div class="flex justify-between font-bold">
+                        <span class="text-indigo-500">Theme:</span>
+                        <span id="stat-theme" class="text-indigo-800 capitalize">Safari</span>
+                    </div>
+                    <div class="flex justify-between font-bold">
+                        <span class="text-indigo-500">Difficulty:</span>
+                        <span id="stat-diff" class="text-indigo-800 capitalize">Medium</span>
+                    </div>
+                    <div class="flex justify-between font-bold">
+                        <span class="text-indigo-500">Flips Done:</span>
+                        <span id="stat-moves" class="text-pink-600">0</span>
+                    </div>
+                    <div class="flex justify-between font-bold border-t border-indigo-200/50 pt-2">
+                        <span class="text-indigo-500">Rank Achieved:</span>
+                        <span id="stat-rating" class="text-yellow-500">Super Matcher! 🏆</span>
+                    </div>
+                </div>
+
+                <!-- Victory Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="resetToMenu()" class="flex-1 px-5 py-3.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-playful text-base rounded-2xl shadow-md transition-all active:scale-95">
+                        Back to Menu 🏠
+                    </button>
+                    <button onclick="playAgain()" class="flex-grow-[2] px-5 py-3.5 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-playful text-lg rounded-2xl shadow-lg transition-all active:scale-95 border-2 border-white">
+                        Play Again! 🔄
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-2 text-indigo-400/80 font-semibold text-xs flex justify-center items-center gap-2">
+        <span>Made with 💖 for happy kids</span>
+        <span>•</span>
+        <span>Tap cards to uncover matching pairs!</span>
+    </footer>
+
+    <!-- Game Script Block -->
+    <script>
+        // Game Constants & Expanded Themes Definitions (Now with 12 unique cards each)
+        const ANIMAL_THEMES = {
+            safari: ['🦁', '🦓', '🐘', '🦒', '🐒', '🦛', '🐯', '🐆', '🦏', '🐊', '🦩', '🦍'],
+            forest: ['🐻', '🦊', '🐿️', '🦉', '🦌', '🐰', '🦔', '🦝', '🐺', '🐗', '🦫', '🦡'],
+            ocean: ['🐳', '🐬', '🐙', '🦈', '🐢', '🐠', '🦀', '🦭', '🐡', '🦞', '🦐', '🦑'],
+            pets: ['🐶', '🐱', '🐹', '🐰', '🦜', '🐟', '🐢', '🦄', '🐭', '🦎', '🐷', '🐔']
+        };
+
+        // Complete Emoji-to-Kid-Friendly-Word Mapping
+        const ANIMAL_NAMES = {
+            '🦁': 'Lion', '🦓': 'Zebra', '🐘': 'Elephant', '🦒': 'Giraffe', '🐒': 'Monkey', '🦛': 'Hippo', '🐯': 'Tiger', '🐆': 'Leopard',
+            '🦏': 'Rhino', '🐊': 'Crocodile', '🦩': 'Flamingo', '🦍': 'Gorilla',
+            '🐻': 'Bear', '🦊': 'Fox', '🐿️': 'Squirrel', '🦉': 'Owl', '🦌': 'Deer', '🐰': 'Bunny', '🦔': 'Hedgehog', '🦝': 'Raccoon',
+            '🐺': 'Wolf', '🐗': 'Boar', '🦫': 'Beaver', '🦡': 'Badger',
+            '🐳': 'Whale', '🐬': 'Dolphin', '🐙': 'Octopus', '🦈': 'Shark', '🐢': 'Turtle', '🐠': 'Fish', '🦀': 'Crab', '🦭': 'Seal',
+            '🐡': 'Blowfish', '🦞': 'Lobster', '🦐': 'Shrimp', '🦑': 'Squid',
+            '🐶': 'Dog', '🐱': 'Cat', '🐹': 'Hamster', '🦜': 'Parrot', '🐟': 'Fish', '🦄': 'Unicorn',
+            '🐭': 'Mouse', '🦎': 'Lizard', '🐷': 'Pig', '🐔': 'Chicken'
+        };
+
+        const GAME_CONFIGS = {
+            easy: { cols: 3, rows: 2, pairs: 3 },
+            medium: { cols: 4, rows: 3, pairs: 6 },
+            hard: { cols: 4, rows: 4, pairs: 8 },
+            expert: { cols: 6, rows: 4, pairs: 12 }
+        };
+
+        // Application State Management
+        let selectedTheme = 'safari';
+        let selectedDiff = 'medium';
+        let cards = [];
+        let flippedCards = [];
+        let movesCount = 0;
+        let matchedPairs = 0;
+        let isBoardLocked = false;
+        let totalPairs = 0;
+
+        // Custom Highscores using localStorage safely
+        let highScores = {};
+        try {
+            const saved = localStorage.getItem('animal_memory_highscores');
+            if (saved) highScores = JSON.parse(saved);
+        } catch(e) { console.error(e); }
+
+        // Audio synthesizer via Web Audio API
+        let audioContext = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        // Web Speech API Voice Reinforcement for Kids
+        function speakWord(word) {
+            if (isMuted) return;
+            if (window.speechSynthesis) {
+                // Instantly cancel any currently reading speech to prevent overlaps
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = 0.85; // Slightly slower speed so kids can capture pronunciation clearly
+                utterance.pitch = 1.25; // Playful, slightly high-pitched cartoon-like kid-vibe voice
+                
+                // Seek system default English speaking voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const engVoice = voices.find(v => v.lang.startsWith('en'));
+                if (engVoice) utterance.voice = engVoice;
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Play procedural Sound Effects
+        function playSfx(type) {
+            if (isMuted) return;
+            initAudio();
+            if (!audioContext) return;
+
+            const now = audioContext.currentTime;
+
+            switch (type) {
+                case 'click':
+                    {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(180, now);
+                        osc.frequency.exponentialRampToValueAtTime(320, now + 0.1);
+                        gain.gain.setValueAtTime(0.15, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.1);
+                    }
+                    break;
+                case 'flip':
+                    {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(150, now);
+                        osc.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+                        gain.gain.setValueAtTime(0.2, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.15);
+                    }
+                    break;
+                case 'match':
+                    {
+                        // Happy sweet high bell chord
+                        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                        notes.forEach((freq, idx) => {
+                            const osc = audioContext.createOscillator();
+                            const gain = audioContext.createGain();
+                            osc.type = 'sine';
+                            osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+                            gain.gain.setValueAtTime(0.12, now + idx * 0.05);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.4);
+                            osc.connect(gain);
+                            gain.connect(audioContext.destination);
+                            osc.start(now + idx * 0.05);
+                            osc.stop(now + idx * 0.05 + 0.4);
+                        });
+                    }
+                    break;
+                case 'miss':
+                    {
+                        // Funny playful low cartoon boing down
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.type = 'sawtooth';
+                        osc.frequency.setValueAtTime(220, now);
+                        osc.frequency.linearRampToValueAtTime(100, now + 0.3);
+                        
+                        // Simple low-pass filter to make it softer for kids' ears
+                        const filter = audioContext.createBiquadFilter();
+                        filter.type = 'lowpass';
+                        filter.frequency.setValueAtTime(400, now);
+
+                        gain.gain.setValueAtTime(0.1, now);
+                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                        
+                        osc.connect(filter);
+                        filter.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.start(now);
+                        osc.stop(now + 0.3);
+                    }
+                    break;
+                case 'victory':
+                    {
+                        // Energetic major scale ascending fanfare
+                        const scale = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+                        scale.forEach((freq, idx) => {
+                            const osc = audioContext.createOscillator();
+                            const gain = audioContext.createGain();
+                            osc.type = 'triangle';
+                            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                            gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.3);
+                            osc.connect(gain);
+                            gain.connect(audioContext.destination);
+                            osc.start(now + idx * 0.08);
+                            osc.stop(now + idx * 0.08 + 0.35);
+                        });
+                    }
+                    break;
+            }
+        }
+
+        // Setup DOM Canvas and Rendering loop properties
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Canvas Particle Engine System (Match bursts & victory confetti)
+        let particles = [];
+        
+        class Particle {
+            constructor(x, y, color, type = 'star') {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.type = type; // 'star', 'circle', 'square', 'heart'
+                this.size = Math.random() * 8 + 6;
+                this.angle = Math.random() * Math.PI * 2;
+                this.speed = Math.random() * 5 + 3;
+                this.gravity = type === 'square' ? 0.15 : 0.05; // square confetti falls faster
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed - (type === 'square' ? 2 : 0);
+                this.opacity = 1;
+                this.decay = Math.random() * 0.015 + 0.01;
+                this.rotation = Math.random() * Math.PI;
+                this.rotSpeed = (Math.random() - 0.5) * 0.1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += this.gravity;
+                this.rotation += this.rotSpeed;
+                this.opacity -= this.decay;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.fillStyle = this.color;
+
+                if (this.type === 'star') {
+                    // Draw mini 5-point star
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        ctx.lineTo(Math.cos((18 + i * 72) * Math.PI / 180) * this.size, 
+                                   Math.sin((18 + i * 72) * Math.PI / 180) * this.size);
+                        ctx.lineTo(Math.cos((54 + i * 72) * Math.PI / 180) * (this.size/2), 
+                                   Math.sin((54 + i * 72) * Math.PI / 180) * (this.size/2));
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (this.type === 'heart') {
+                    // Cute simple heart shapes
+                    ctx.beginPath();
+                    ctx.moveTo(0, this.size/4);
+                    ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, 0, 0, this.size);
+                    ctx.bezierCurveTo(this.size, 0, this.size/2, -this.size/2, 0, this.size/4);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (this.type === 'square') {
+                    // Classic falling square confetti
+                    ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                } else {
+                    // Simple bouncy circles
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        }
+
+        // Spawn a blast of interactive particles at coordinate
+        function spawnBlast(x, y, count = 15, type = 'star') {
+            const colors = ['#f43f5e', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#f97316'];
+            for (let i = 0; i < count; i++) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                particles.push(new Particle(x, y, color, type));
+            }
+        }
+
+        // Setup Screen theme UI choices toggle active state classes
+        function selectTheme(themeId) {
+            playSfx('click');
+            selectedTheme = themeId;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-500', 'bg-indigo-100/80', 'ring-4', 'ring-indigo-300');
+            });
+            const activeBtn = document.getElementById(`theme-${themeId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('border-indigo-500', 'bg-indigo-100/80', 'ring-4', 'ring-indigo-300');
+            }
+        }
+
+        function selectDifficulty(diffId) {
+            playSfx('click');
+            selectedDiff = diffId;
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.classList.remove('border-indigo-600', 'bg-indigo-100', 'ring-4', 'ring-indigo-200');
+                // restore their original light custom themes
+                if (btn.id === 'diff-easy') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-green-200');
+                if (btn.id === 'diff-medium') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-amber-200');
+                if (btn.id === 'diff-hard') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-rose-200');
+                if (btn.id === 'diff-expert') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-purple-200');
+            });
+            const activeBtn = document.getElementById(`diff-${diffId}`);
+            if (activeBtn) {
+                if (diffId === 'easy') activeBtn.classList.add('border-green-500', 'ring-4', 'ring-green-200');
+                if (diffId === 'medium') activeBtn.classList.add('border-amber-500', 'ring-4', 'ring-amber-200');
+                if (diffId === 'hard') activeBtn.classList.add('border-rose-500', 'ring-4', 'ring-rose-200');
+                if (diffId === 'expert') activeBtn.classList.add('border-purple-500', 'ring-4', 'ring-purple-200');
+            }
+        }
+
+        // Initialize state arrays and setup game boards
+        function generateBoard() {
+            const config = GAME_CONFIGS[selectedDiff];
+            const themeAnimals = [...ANIMAL_THEMES[selectedTheme]];
+            
+            // Randomly select animal set needed for current board size
+            const selectedSet = [];
+            while (selectedSet.length < config.pairs) {
+                const randIndex = Math.floor(Math.random() * themeAnimals.length);
+                const animal = themeAnimals.splice(randIndex, 1)[0];
+                selectedSet.push(animal);
+            }
+
+            // Duplicate to form pairs, then shuffle
+            let gameSet = [...selectedSet, ...selectedSet];
+            gameSet = shuffleArray(gameSet);
+
+            // Construct card logical representation instances
+            cards = [];
+            for (let i = 0; i < gameSet.length; i++) {
+                cards.push({
+                    id: i,
+                    animal: gameSet[i],
+                    isFlipped: false,
+                    isMatched: false,
+                    flipProgress: 0, // 0 is card back, 1 is card front fully revealed
+                    targetFlip: 0,
+                    shakeProgress: 0, // Shake animation trigger tracking
+                    shakeDirection: 1,
+                    // Graphics layout box values (recalculated on dynamically sizing layouts)
+                    x: 0,
+                    y: 0,
+                    width: 0,
+                    height: 0,
+                    radius: 16
+                });
+            }
+
+            movesCount = 0;
+            matchedPairs = 0;
+            totalPairs = config.pairs;
+            flippedCards = [];
+            isBoardLocked = false;
+
+            document.getElementById('moves-val').innerText = movesCount;
+            document.getElementById('pairs-val').innerText = totalPairs - matchedPairs;
+
+            // Load highscore display
+            const bestKey = `${selectedTheme}_${selectedDiff}`;
+            const best = highScores[bestKey];
+            document.getElementById('best-val').innerText = best ? best : '-';
+        }
+
+        // Helper randomizer array shuffler (Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Dynamic multi-DPI canvas resolution adjuster
+        let dpr = window.devicePixelRatio || 1;
+        let logicalWidth = 800;
+        let logicalHeight = 600;
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            // Match parent container dimensions
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            
+            // Scale rendering context properly
+            ctx.resetTransform();
+            ctx.scale(dpr, dpr);
+            
+            logicalWidth = rect.width;
+            logicalHeight = rect.height;
+
+            layoutCards();
+        }
+
+        // Card Position Grid Calculations
+        function layoutCards() {
+            if (cards.length === 0) return;
+
+            const config = GAME_CONFIGS[selectedDiff];
+            const cols = config.cols;
+            const rows = config.rows;
+
+            // Add margin spacing padding based on canvas scaling
+            const paddingX = logicalWidth * 0.08;
+            const paddingY = logicalHeight * 0.08;
+            const gap = Math.min(logicalWidth, logicalHeight) * 0.04;
+
+            const availableWidth = logicalWidth - (paddingX * 2);
+            const availableHeight = logicalHeight - (paddingY * 2);
+
+            const cardWidth = (availableWidth - (gap * (cols - 1))) / cols;
+            const cardHeight = (availableHeight - (gap * (rows - 1))) / rows;
+
+            // Fit grid into visual board space perfectly
+            for (let index = 0; index < cards.length; index++) {
+                const col = index % cols;
+                const row = Math.floor(index / cols);
+
+                cards[index].x = paddingX + (col * (cardWidth + gap));
+                cards[index].y = paddingY + (row * (cardHeight + gap));
+                cards[index].width = cardWidth;
+                cards[index].height = cardHeight;
+                // Scale corners nicely
+                cards[index].radius = Math.min(cardWidth, cardHeight) * 0.15;
+            }
+        }
+
+        // Run UI screen navigation triggers
+        function startGame() {
+            initAudio();
+            playSfx('click');
+            
+            // Hide menu overlay with animation
+            const setupScr = document.getElementById('setup-screen');
+            setupScr.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+
+            generateBoard();
+            resizeCanvas();
+            
+            // Draw original fresh screen frame
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resetToMenu() {
+            playSfx('click');
+            // Hide victory screen
+            const winScr = document.getElementById('victory-screen');
+            if (winScr) {
+                winScr.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+            }
+            const winCard = document.getElementById('victory-card');
+            if (winCard) {
+                winCard.classList.add('scale-90');
+            }
+
+            // Show setup overlay
+            const setupScr = document.getElementById('setup-screen');
+            if (setupScr) {
+                setupScr.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+            }
+        }
+
+        function playAgain() {
+            playSfx('click');
+            const winScr = document.getElementById('victory-screen');
+            winScr.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+            document.getElementById('victory-card').classList.add('scale-90');
+
+            generateBoard();
+            resizeCanvas();
+        }
+
+        // Render Utilities & Procedural Graphic Drawings
+        function drawRoundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        // Draw card front face design
+        function drawCardFront(ctx, card, width, height) {
+            // Smooth glowing pastel background matching the theme
+            let baseColor = '#ffffff';
+            let borderColor = '#e0e7ff';
+            
+            if (card.isMatched) {
+                baseColor = '#f0fdf4';
+                borderColor = '#86efac';
+            }
+
+            ctx.fillStyle = baseColor;
+            ctx.shadowColor = 'rgba(99, 102, 241, 0.15)';
+            ctx.shadowBlur = 12;
+            ctx.shadowOffsetY = 4;
+            drawRoundedRect(ctx, -width / 2, -height / 2, width, height, card.radius);
+            ctx.fill();
+            ctx.shadowBlur = 0; // Reset shadows for performance
+            ctx.shadowOffsetY = 0;
+
+            // Stylish inner decorative border
+            ctx.strokeStyle = borderColor;
+            ctx.lineWidth = 4;
+            drawRoundedRect(ctx, -width / 2 + 6, -height / 2 + 6, width - 12, height - 12, card.radius - 4);
+            ctx.stroke();
+
+            // Render matching visual feedback badges
+            if (card.isMatched) {
+                ctx.fillStyle = '#22c55e';
+                ctx.beginPath();
+                ctx.arc(width/2 - 14, -height/2 + 14, 10, 0, Math.PI*2);
+                ctx.fill();
+                // Little white tick mark on badge
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.moveTo(width/2 - 18, -height/2 + 14);
+                ctx.lineTo(width/2 - 15, -height/2 + 17);
+                ctx.lineTo(width/2 - 11, -height/2 + 11);
+                ctx.stroke();
+            }
+
+            // Draw center cartoonish emoji scale breathing
+            ctx.save();
+            let pulse = 1.0;
+            if (card.isMatched) {
+                // Gentle infinite loop pulse scale
+                pulse = 1.0 + Math.sin(Date.now() * 0.005) * 0.05;
+            }
+            ctx.scale(pulse, pulse);
+            
+            const minDim = Math.min(width, height);
+            
+            // Adjust emoji dimensions slightly smaller to make elegant room for labeled names
+            const emojiSize = minDim * 0.42;
+            ctx.font = `bold ${emojiSize}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", EmojiSymbols, Arial, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Force system emoji render color bounds
+            ctx.fillStyle = '#0f172a';
+            
+            // Add subtle animal soft drop shadow
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 3;
+            ctx.shadowOffsetY = 2;
+            
+            // Place emoji slightly elevated in upper half
+            const emojiYOffset = -height * 0.14;
+            ctx.fillText(card.animal, 0, emojiYOffset);
+            ctx.restore();
+
+            // Draw clean, highly legible animal name badge below the emoji
+            ctx.save();
+            const animalName = ANIMAL_NAMES[card.animal] || "";
+            const fontSize = Math.max(10, minDim * 0.12);
+            ctx.font = `bold ${fontSize}px 'Quicksand', 'Fredoka One', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            // Position name text in lower portion
+            const textYOffset = height * 0.28;
+
+            // Draw beautiful soft round pastel label card badge
+            const nameWidth = ctx.measureText(animalName).width;
+            const badgeWidth = nameWidth + fontSize * 1.0;
+            const badgeHeight = fontSize * 1.5;
+
+            ctx.fillStyle = card.isMatched ? '#e8f5e9' : '#f0f2ff'; // Green-mint matched or pastel blue-violet default
+            drawRoundedRect(ctx, -badgeWidth / 2, textYOffset - badgeHeight / 2, badgeWidth, badgeHeight, badgeHeight / 2);
+            ctx.fill();
+
+            // Draw readable bold animal label text over background badge
+            ctx.fillStyle = card.isMatched ? '#16a34a' : '#4f46e5'; 
+            ctx.fillText(animalName, 0, textYOffset + 1);
+            ctx.restore();
+        }
+
+        // Draw card back procedural graphic design
+        function drawCardBack(ctx, card, width, height) {
+            // Elegant premium colorful gradient
+            let grad = ctx.createLinearGradient(-width / 2, -height / 2, width / 2, height / 2);
+            
+            // Switch theme color palettes
+            if (selectedTheme === 'safari') {
+                grad.addColorStop(0, '#f59e0b'); // Warm Amber
+                grad.addColorStop(1, '#ec4899'); // Sweet pink
+            } else if (selectedTheme === 'forest') {
+                grad.addColorStop(0, '#10b981'); // Vibrant emerald green
+                grad.addColorStop(1, '#3b82f6'); // Cool blue
+            } else if (selectedTheme === 'ocean') {
+                grad.addColorStop(0, '#06b6d4'); // Bright Cyan
+                grad.addColorStop(1, '#4f46e5'); // Rich Deep Royal Blue
+            } else {
+                grad.addColorStop(0, '#f43f5e'); // Rose gold peach
+                grad.addColorStop(1, '#fbbf24'); // Sunny gold
+            }
+
+            ctx.fillStyle = grad;
+            ctx.shadowColor = 'rgba(79, 70, 229, 0.22)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetY = 6;
+            drawRoundedRect(ctx, -width / 2, -height / 2, width, height, card.radius);
+            ctx.fill();
+            ctx.shadowBlur = 0; // Reset
+            ctx.shadowOffsetY = 0;
+
+            // Elegant Outer bright white outline
+            ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+            ctx.lineWidth = 4;
+            drawRoundedRect(ctx, -width / 2 + 5, -height / 2 + 5, width - 10, height - 10, card.radius - 2);
+            ctx.stroke();
+
+            // Draw procedural geometric patterned grid (polka dots / stars)
+            ctx.save();
+            ctx.clip(); // Restrict pattern within card boundaries
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            const dotSpacing = 24;
+            for (let x = -width; x < width; x += dotSpacing) {
+                for (let y = -height; y < height; y += dotSpacing) {
+                    ctx.beginPath();
+                    ctx.arc(x + (y % 2 === 0 ? dotSpacing/2 : 0), y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            ctx.restore();
+
+            // Big friendly mystery bubble badge
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+            ctx.beginPath();
+            const badgeRadius = Math.min(width, height) * 0.22;
+            ctx.arc(0, 0, badgeRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Drawing white question mark
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${badgeRadius * 1.2}px 'Fredoka One', 'Quicksand', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('?', 0, 1);
+        }
+
+        // Animation calculations & Game Tick Loop
+        let lastTime = Date.now();
+        
+        function gameLoop() {
+            const now = Date.now();
+            const dt = (now - lastTime) / 1000;
+            lastTime = now;
+
+            // Clear Background Screen frame
+            ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+
+            // Draw soft interactive ambient floating circles
+            ctx.fillStyle = '#eef2ff';
+            ctx.beginPath();
+            ctx.arc(60, 80, 40, 0, Math.PI * 2);
+            ctx.arc(logicalWidth - 80, logicalHeight - 120, 60, 0, Math.PI * 2);
+            ctx.fill();
+
+            let allTransitionsFinished = true;
+
+            // Loop and draw all match cards
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+
+                // Interpolate flip animations
+                if (card.flipProgress !== card.targetFlip) {
+                    const diff = card.targetFlip - card.flipProgress;
+                    if (Math.abs(diff) < 0.08) {
+                        card.flipProgress = card.targetFlip;
+                    } else {
+                        card.flipProgress += Math.sign(diff) * 8 * dt; // Fast smooth flip speed
+                        allTransitionsFinished = false;
+                    }
+                }
+
+                // Smoothly decrement card shakes
+                if (card.shakeProgress > 0) {
+                    card.shakeProgress -= dt * 3.5; // shake decay speed
+                    if (card.shakeProgress < 0) card.shakeProgress = 0;
+                    allTransitionsFinished = false;
+                }
+
+                ctx.save();
+
+                // Compute shake displacement
+                let shakeOffset = 0;
+                if (card.shakeProgress > 0) {
+                    // Create sweet sinewave bounce decay shake
+                    shakeOffset = Math.sin(card.shakeProgress * Math.PI * 6) * 12 * card.shakeProgress;
+                }
+
+                // Relocate coordinates system to card center for easy 3D flipping simulation (scaling X-axis)
+                const centerX = card.x + card.width / 2 + shakeOffset;
+                const centerY = card.y + card.height / 2;
+                ctx.translate(centerX, centerY);
+
+                // Simulate 3D horizontal scale rotation using simple cosine-like projection
+                const scaleX = Math.abs(Math.cos(card.flipProgress * Math.PI));
+                ctx.scale(scaleX, 1);
+
+                // Determine whether to draw Front or Back depending on flip state
+                if (card.flipProgress < 0.5) {
+                    drawCardBack(ctx, card, card.width, card.height);
+                } else {
+                    drawCardFront(ctx, card, card.width, card.height);
+                }
+
+                ctx.restore();
+            }
+
+            // Update & Render particle sprites
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.update();
+                p.draw(ctx);
+                if (p.opacity <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            // Continuous animation looping
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Play sound & flip logic triggers on card click input events
+        function handleBoardClick(clientX, clientY) {
+            if (isBoardLocked) return;
+
+            // Localize coordinate offsets relative to canvas sizing
+            const rect = canvas.getBoundingClientRect();
+            const clickX = clientX - rect.left;
+            const clickY = clientY - rect.top;
+
+            // Check card bounding collisions
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                if (card.isMatched || card.isFlipped) continue;
+
+                if (clickX >= card.x && clickX <= card.x + card.width &&
+                    clickY >= card.y && clickY <= card.y + card.height) {
+                    
+                    // Card flip execution
+                    flipCard(card);
+                    break;
+                }
+            }
+        }
+
+        function flipCard(card) {
+            playSfx('flip');
+            card.isFlipped = true;
+            card.targetFlip = 1; // Slide target towards revealing state
+            flippedCards.push(card);
+
+            // Audio Reinforcement Speech feedback immediately on face up
+            const nameToSpeak = ANIMAL_NAMES[card.animal] || "Animal";
+            speakWord(nameToSpeak);
+
+            if (flippedCards.length === 2) {
+                isBoardLocked = true;
+                movesCount++;
+                document.getElementById('moves-val').innerText = movesCount;
+
+                // Check Matching Pair equality condition
+                setTimeout(checkMatch, 600);
+            }
+        }
+
+        // Check Matching Pair equality condition
+        function checkMatch() {
+            const card1 = flippedCards[0];
+            const card2 = flippedCards[1];
+
+            if (card1.animal === card2.animal) {
+                // Match Found Success!
+                playSfx('match');
+                
+                card1.isMatched = true;
+                card2.isMatched = true;
+                matchedPairs++;
+
+                // Trigger gorgeous victory star bursts on matching cards locations
+                const c1X = card1.x + card1.width / 2;
+                const c1Y = card1.y + card1.height / 2;
+                const c2X = card2.x + card2.width / 2;
+                const c2Y = card2.y + card2.height / 2;
+
+                spawnBlast(c1X, c1Y, 15, 'star');
+                spawnBlast(c2X, c2Y, 15, 'star');
+
+                flippedCards = [];
+                isBoardLocked = false;
+
+                document.getElementById('pairs-val').innerText = totalPairs - matchedPairs;
+
+                // Check Win Scenario
+                if (matchedPairs === totalPairs) {
+                    handleVictory();
+                }
+            } else {
+                // Not a match, trigger bouncy shake animation, then flip back
+                playSfx('miss');
+                card1.shakeProgress = 1.0;
+                card2.shakeProgress = 1.0;
+
+                setTimeout(() => {
+                    card1.isFlipped = false;
+                    card2.isFlipped = false;
+                    card1.targetFlip = 0; // Rotate card back design
+                    card2.targetFlip = 0;
+                    flippedCards = [];
+                    isBoardLocked = false;
+                }, 800);
+            }
+        }
+
+        // Process final calculations and launch full celebration sequences
+        function handleVictory() {
+            playSfx('victory');
+
+            // Explode a massive amount of colorful celebration confetti all over the viewport
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    spawnBlast(Math.random() * logicalWidth, Math.random() * (logicalHeight * 0.4), 20, 'square');
+                    spawnBlast(Math.random() * logicalWidth, Math.random() * (logicalHeight * 0.4), 15, 'heart');
+                }, i * 200);
+            }
+
+            // Save High Score stats locally
+            const bestKey = `${selectedTheme}_${selectedDiff}`;
+            const currentBest = highScores[bestKey];
+            if (!currentBest || movesCount < currentBest) {
+                highScores[bestKey] = movesCount;
+                try {
+                    localStorage.setItem('animal_memory_highscores', JSON.stringify(highScores));
+                } catch(e) { console.error(e); }
+                document.getElementById('best-val').innerText = movesCount;
+            }
+
+            // Calculate kid-friendly visual rating stars
+            let ratingText = "Super Matcher! 🏆";
+            let activeStarsCount = 1;
+
+            if (selectedDiff === 'easy') {
+                if (movesCount <= 4) { activeStarsCount = 3; ratingText = "Amazing Genius! 🌟🌟🌟"; }
+                else if (movesCount <= 6) { activeStarsCount = 2; ratingText = "Superstar Matcher! ⭐⭐"; }
+                else { activeStarsCount = 1; ratingText = "Keep trying, champ! ⭐"; }
+            } else if (selectedDiff === 'medium') {
+                if (movesCount <= 9) { activeStarsCount = 3; ratingText = "Magnificent Mind! 🌟🌟🌟"; }
+                else if (movesCount <= 13) { activeStarsCount = 2; ratingText = "Excellent Focus! ⭐⭐"; }
+                else { activeStarsCount = 1; ratingText = "Great effort! ⭐"; }
+            } else if (selectedDiff === 'hard') {
+                if (movesCount <= 13) { activeStarsCount = 3; ratingText = "Absolute Prodigy! 🌟🌟🌟"; }
+                else if (movesCount <= 19) { activeStarsCount = 2; ratingText = "Memory Master! ⭐⭐"; }
+                else { activeStarsCount = 1; ratingText = "Flipped to success! ⭐"; }
+            } else { // expert (12 pairs / 24 cards)
+                if (movesCount <= 18) { activeStarsCount = 3; ratingText = "Ultimate Memory Legend! 🌟🌟🌟"; }
+                else if (movesCount <= 26) { activeStarsCount = 2; ratingText = "Supreme Mind Master! ⭐⭐"; }
+                else { activeStarsCount = 1; ratingText = "Fantastic focus effort! ⭐"; }
+            }
+
+            // Display Statistics HUD on Victory screen
+            document.getElementById('stat-theme').innerText = selectedTheme;
+            document.getElementById('stat-diff').innerText = selectedDiff;
+            document.getElementById('stat-moves').innerText = movesCount;
+            document.getElementById('stat-rating').innerText = ratingText;
+
+            // Render Stars element list
+            const star1 = document.getElementById('star-1');
+            const star2 = document.getElementById('star-2');
+            const star3 = document.getElementById('star-3');
+
+            // Reset Star colors helper
+            star1.className = "text-5xl filter drop-shadow transition-colors duration-500 " + (activeStarsCount >= 1 ? "text-yellow-400" : "text-gray-300");
+            star2.className = "text-6xl filter drop-shadow -mt-2 transition-colors duration-500 " + (activeStarsCount >= 2 ? "text-yellow-400" : "text-gray-300");
+            star3.className = "text-5xl filter drop-shadow transition-colors duration-500 " + (activeStarsCount >= 3 ? "text-yellow-400" : "text-gray-300");
+
+            // Open Victory Screen popup with delay for better user flow
+            setTimeout(() => {
+                const winScr = document.getElementById('victory-screen');
+                winScr.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
+                document.getElementById('victory-card').classList.remove('scale-90');
+            }, 1000);
+        }
+
+        // Sound Toggle Click Controls
+        const audioBtn = document.getElementById('audio-toggle');
+        const audioIcon = document.getElementById('audio-icon');
+
+        audioBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            if (isMuted) {
+                audioBtn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
+                audioBtn.classList.add('bg-rose-100', 'text-rose-600', 'border-rose-200');
+                // Change icon to muted SVG
+                audioIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6L4.5 9H1.5A1.5 1.5 0 000 10.5v3A1.5 1.5 0 001.5 15h3l4.25 3.25c.62.47 1.5.03 1.5-.75V6.5c0-.78-.88-1.22-1.5-.75L4.5 9z" />`;
+                if (window.speechSynthesis) window.speechSynthesis.cancel();
+            } else {
+                audioBtn.classList.add('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
+                audioBtn.classList.remove('bg-rose-100', 'text-rose-600', 'border-rose-200');
+                // Change icon to playing sound SVG
+                audioIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />`;
+                initAudio();
+            }
+        });
+
+        // Event listeners binding (Unified Touch & Clicks)
+        canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            handleBoardClick(e.clientX, e.clientY);
+        });
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Stop mouse emulation doubling event
+            const touch = e.touches[0];
+            handleBoardClick(touch.clientX, touch.clientY);
+        });
+
+        // Handle auto resizing dynamic scaling adjustments smoothly
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+        });
+
+        // Initialize setup screen menu styling
+        selectTheme('safari');
+        selectDifficulty('medium');
+    </script>
+</body>
+</html>
