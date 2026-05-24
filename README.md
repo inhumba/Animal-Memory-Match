@@ -21,8 +21,9 @@ Play the game in your browser — no install required:
   * **Hard:** 8 Pairs (![][image3] grid) — A healthy brain exercise.  
   * **Expert:** 12 Pairs (![][image4] grid) — The ultimate memory championship\!  
 * **🗣️ Audio-Assisted Learning (Voice & SFX):**  
-  * **Web Speech API integration:** Pronounces the name of the animal out loud in a friendly voice whenever a card is flipped, transforming the game into an interactive flashcard learning tool.  
+  * **Web Speech API integration:** Pronounces the animal name in a friendly voice whenever a card is flipped, turning the game into an interactive flashcard learning tool. Works on desktop and mobile browsers (Chrome & Safari on phones/tablets).  
   * **Procedural Audio Synthesizer (Web Audio API):** Generates custom playful sound effects on-the-fly for card flips, successful matches, mismatches, and victory fanfares without using external audio files.  
+  * **Mute toggle:** A header button mutes both speech and SFX together.  
 * **🎨 Stunning Procedural Animations:**  
   * High-DPI (Retina-ready) automated canvas scaling for ultra-sharp rendering.  
   * 3D horizontal card-flipping calculations.  
@@ -56,19 +57,23 @@ Because the entire game is built as a **single, self-contained file**, there are
 
 * Designed with mobile-first responsiveness.  
 * Large touch targets tailored for small children's fingers.  
-* Integrated unified touch event listeners (touchstart & mousedown) to eliminate tapping delays.  
-* Dynamic canvas orientation adjustments on window resize to ensure no horizontal scrolling occurs.
-
-## **📝 License**
-
-This project is open-source and free to use or modify. Have fun playing and learning with your kids\! 💖
+* Integrated unified touch event listeners (`touchstart` & `mousedown`) to eliminate tapping delays.  
+* Dynamic canvas orientation adjustments on window resize to ensure no horizontal scrolling occurs.  
+* Setup menu and victory screen use scrollable, full-viewport layouts on phones to prevent content clipping.  
+* **Speech on iOS/Android:** Voices are cached when the browser loads them, the speech engine is woken on **Play** (and on the first card tap if needed), and overlapping utterances are handled safely for mobile Safari/Chrome.
 
 ## **📋 Recent Updates**
 
+* **Mobile speech:** Fixed animal-name voice-over on phones and tablets (iOS/Android Chrome & Safari). Voices load via `voiceschanged`, the engine primes on Play, and `speak()` is deferred correctly after `cancel()` on WebKit.
+* **Victory screen:** Fixed mobile clipping by moving the overlay outside the canvas container, using a full-screen modal on phones, and tightening responsive spacing.
 * **Favicon:** Added `favicon.ico` at the project root and linked it in `index.html` for browser tab branding.
 * **Mobile layout:** Fixed menu overlap on phones/tablets by switching to `min-h-dvh`, natural-flow setup screen, and responsive game board toggling.
 * **Typography:** Playful UI font updated from Fredoka One to **Margarine** (Google Fonts); Quicksand remains for body text.
 * **Difficulty modes:** Top tier renamed from **Hardest** to **Expert** (12 pairs, 6×4 grid).
+
+## **📝 License**
+
+This project is open-source and free to use or modify. Have fun playing and learning with your kids\! 💖
 
 [image1]: <data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAZCAYAAABOxhwiAAABx0lEQVR4Xu2Vvy4EURTGZUUkBCFkkp2xszu7yVaqLRQ8gifQeAUPYDU6rUShJaHXegAlOi2NQsOy2PXvO3KGO587f2yyCuaXnOzc75wz97sz984ODOTk/BNKpdKi7/vXiDfEMaQC1/wGmPtIPbTK5fIK5yOgaAuxbYzb0ozFBGZdv8GcT/gZlOt6vT6mHi6o7AspwOrmWZMwtX4Cg+s6ZzPUEj04jjNqK7BpNlCzzJpJo9EYkqfHOuN53pzMhwUshVqqByQ30LBAWnKTUqlUHNTdsC7oQ+mwnhX10GI9EW16Zd2G67oeau9MTU13TS0rQRBMyMNAtDmXCPb7mRgvFosjnIujWq3OoudertX0M9dkAX1NxA7iwTc+GKnIIRXTtVpthnNphOZ7Nc2IDwnWv4F9PqmmhzmXBRywKfR35Wlxrhdwn0M1v885kwKvDuNdc5xEaFquscWm/R/uT9SfIG5JW1Pj8WfFtxxEaC+s2dA3Fbm5mv/Y81lQg5FzhfGeaLj/gVn7CZKdsJGDaxlsq3HUPbIuqPnI1yYO1F0iNkmL94BX7LJZI1L3Kg7zKmsm8ucjC2DdBuY71XnP9feKa3JycnJy/gbvciiVE7uC9qAAAAAASUVORK5CYII=>
 
