@@ -57,10 +57,6 @@
                 <span class="text-xs font-bold text-pink-500 block uppercase tracking-wider">Flips</span>
                 <span id="moves-val" class="text-xl md:text-2xl font-playful text-pink-600">0</span>
             </div>
-            <div class="bg-teal-100 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-2 border-teal-200 text-center">
-                <span class="text-xs font-bold text-teal-500 block uppercase tracking-wider">Pairs Left</span>
-                <span id="pairs-val" class="text-xl md:text-2xl font-playful text-teal-600">0</span>
-            </div>
             <div class="bg-amber-100 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-2 border-amber-200 text-center hidden sm:block">
                 <span class="text-xs font-bold text-amber-500 block uppercase tracking-wider">Best Score</span>
                 <span id="best-val" class="text-xl md:text-2xl font-playful text-amber-600">-</span>
@@ -211,6 +207,10 @@
                         <span class="text-indigo-500 shrink-0">Flips Done:</span>
                         <span id="stat-moves" class="text-pink-600 text-right">0</span>
                     </div>
+                    <div class="flex justify-between gap-3 font-bold">
+                        <span class="text-indigo-500 shrink-0">Score:</span>
+                        <span id="stat-score" class="text-amber-600 text-right">0 / 100</span>
+                    </div>
                     <div class="flex justify-between gap-3 font-bold border-t border-indigo-200/50 pt-2">
                         <span class="text-indigo-500 shrink-0">Rank Achieved:</span>
                         <span id="stat-rating" class="text-yellow-500 text-right leading-snug">Super Matcher! 🏆</span>
@@ -292,13 +292,49 @@
         let matchedPairs = 0;
         let isBoardLocked = false;
         let totalPairs = 0;
+        let matchStreak = 0;
+        let bestMatchStreak = 0;
 
-        // Custom Highscores using localStorage safely
-        let highScores = {};
+        // Best round scores (0–100) per theme + difficulty, saved locally
+        let bestScores = {};
         try {
-            const saved = localStorage.getItem('animal_memory_highscores');
-            if (saved) highScores = JSON.parse(saved);
+            const saved = localStorage.getItem('animal_memory_best_scores');
+            if (saved) bestScores = JSON.parse(saved);
         } catch(e) { console.error(e); }
+
+        const STAR_BASE_SCORES = { 1: 70, 2: 85, 3: 95 };
+        const STREAK_BONUS = 5;
+
+        function getStarRating(moves, diff) {
+            let stars = 1;
+            let ratingText = "Super Matcher! 🏆";
+
+            if (diff === 'easy') {
+                if (moves <= 4) { stars = 3; ratingText = "Amazing Genius! 🌟🌟🌟"; }
+                else if (moves <= 6) { stars = 2; ratingText = "Superstar Matcher! ⭐⭐"; }
+                else { ratingText = "Keep trying, champ! ⭐"; }
+            } else if (diff === 'medium') {
+                if (moves <= 9) { stars = 3; ratingText = "Magnificent Mind! 🌟🌟🌟"; }
+                else if (moves <= 13) { stars = 2; ratingText = "Excellent Focus! ⭐⭐"; }
+                else { ratingText = "Great effort! ⭐"; }
+            } else if (diff === 'hard') {
+                if (moves <= 13) { stars = 3; ratingText = "Absolute Prodigy! 🌟🌟🌟"; }
+                else if (moves <= 19) { stars = 2; ratingText = "Memory Master! ⭐⭐"; }
+                else { ratingText = "Flipped to success! ⭐"; }
+            } else {
+                if (moves <= 18) { stars = 3; ratingText = "Ultimate Memory Legend! 🌟🌟🌟"; }
+                else if (moves <= 26) { stars = 2; ratingText = "Supreme Mind Master! ⭐⭐"; }
+                else { ratingText = "Fantastic focus effort! ⭐"; }
+            }
+
+            return { stars, ratingText };
+        }
+
+        function calculateRoundScore(stars, streak) {
+            let score = STAR_BASE_SCORES[stars] || 70;
+            if (streak >= 2) score += STREAK_BONUS;
+            return Math.min(100, score);
+        }
 
         // Audio synthesizer via Web Audio API
         let audioContext = null;
@@ -648,17 +684,17 @@
 
             movesCount = 0;
             matchedPairs = 0;
+            matchStreak = 0;
+            bestMatchStreak = 0;
             totalPairs = config.pairs;
             flippedCards = [];
             isBoardLocked = false;
 
             document.getElementById('moves-val').innerText = movesCount;
-            document.getElementById('pairs-val').innerText = totalPairs - matchedPairs;
 
-            // Load highscore display
             const bestKey = `${selectedTheme}_${selectedDiff}`;
-            const best = highScores[bestKey];
-            document.getElementById('best-val').innerText = best ? best : '-';
+            const best = bestScores[bestKey];
+            document.getElementById('best-val').innerText = best != null ? best : '-';
         }
 
         // Helper randomizer array shuffler (Fisher-Yates)
@@ -1121,6 +1157,8 @@
                 card1.isMatched = true;
                 card2.isMatched = true;
                 matchedPairs++;
+                matchStreak++;
+                if (matchStreak > bestMatchStreak) bestMatchStreak = matchStreak;
 
                 // Trigger gorgeous victory star bursts on matching cards locations
                 const c1X = card1.x + card1.width / 2;
@@ -1134,8 +1172,6 @@
                 flippedCards = [];
                 isBoardLocked = false;
 
-                document.getElementById('pairs-val').innerText = totalPairs - matchedPairs;
-
                 // Check Win Scenario
                 if (matchedPairs === totalPairs) {
                     handleVictory();
@@ -1143,6 +1179,7 @@
             } else {
                 // Not a match, trigger bouncy shake animation, then flip back
                 playSfx('miss');
+                matchStreak = 0;
                 card1.shakeProgress = 1.0;
                 card2.shakeProgress = 1.0;
 
@@ -1169,43 +1206,23 @@
                 }, i * 200);
             }
 
-            // Save High Score stats locally
+            const { stars: activeStarsCount, ratingText } = getStarRating(movesCount, selectedDiff);
+            const roundScore = calculateRoundScore(activeStarsCount, bestMatchStreak);
+
             const bestKey = `${selectedTheme}_${selectedDiff}`;
-            const currentBest = highScores[bestKey];
-            if (!currentBest || movesCount < currentBest) {
-                highScores[bestKey] = movesCount;
+            const currentBest = bestScores[bestKey];
+            if (currentBest == null || roundScore > currentBest) {
+                bestScores[bestKey] = roundScore;
                 try {
-                    localStorage.setItem('animal_memory_highscores', JSON.stringify(highScores));
+                    localStorage.setItem('animal_memory_best_scores', JSON.stringify(bestScores));
                 } catch(e) { console.error(e); }
-                document.getElementById('best-val').innerText = movesCount;
+                document.getElementById('best-val').innerText = roundScore;
             }
 
-            // Calculate kid-friendly visual rating stars
-            let ratingText = "Super Matcher! 🏆";
-            let activeStarsCount = 1;
-
-            if (selectedDiff === 'easy') {
-                if (movesCount <= 4) { activeStarsCount = 3; ratingText = "Amazing Genius! 🌟🌟🌟"; }
-                else if (movesCount <= 6) { activeStarsCount = 2; ratingText = "Superstar Matcher! ⭐⭐"; }
-                else { activeStarsCount = 1; ratingText = "Keep trying, champ! ⭐"; }
-            } else if (selectedDiff === 'medium') {
-                if (movesCount <= 9) { activeStarsCount = 3; ratingText = "Magnificent Mind! 🌟🌟🌟"; }
-                else if (movesCount <= 13) { activeStarsCount = 2; ratingText = "Excellent Focus! ⭐⭐"; }
-                else { activeStarsCount = 1; ratingText = "Great effort! ⭐"; }
-            } else if (selectedDiff === 'hard') {
-                if (movesCount <= 13) { activeStarsCount = 3; ratingText = "Absolute Prodigy! 🌟🌟🌟"; }
-                else if (movesCount <= 19) { activeStarsCount = 2; ratingText = "Memory Master! ⭐⭐"; }
-                else { activeStarsCount = 1; ratingText = "Flipped to success! ⭐"; }
-            } else { // expert (12 pairs / 24 cards)
-                if (movesCount <= 18) { activeStarsCount = 3; ratingText = "Ultimate Memory Legend! 🌟🌟🌟"; }
-                else if (movesCount <= 26) { activeStarsCount = 2; ratingText = "Supreme Mind Master! ⭐⭐"; }
-                else { activeStarsCount = 1; ratingText = "Fantastic focus effort! ⭐"; }
-            }
-
-            // Display Statistics HUD on Victory screen
             document.getElementById('stat-theme').innerText = selectedTheme;
             document.getElementById('stat-diff').innerText = selectedDiff;
             document.getElementById('stat-moves').innerText = movesCount;
+            document.getElementById('stat-score').innerText = `${roundScore} / 100`;
             document.getElementById('stat-rating').innerText = ratingText;
 
             // Render Stars element list
