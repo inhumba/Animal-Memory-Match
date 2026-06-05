@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animal Memory Match - Kids Adventure!</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Tailwind CSS for sleek modern layout and styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts for a playful, kid-friendly look -->
-    <link href="https://fonts.googleapis.com/css2?family=Margarine&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Margarine&family=Quicksand:wght@500;700&display=swap" rel="stylesheet" crossorigin>
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
@@ -20,57 +22,297 @@
         .font-playful {
             font-family: 'Margarine', cursive;
         }
-        /* Custom bubbly scrollbar */
+        .ink-secondary {
+            color: oklch(42% 0.1 277);
+        }
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
             background: #eef2ff;
-            border-radius: 10px;
+            border-radius: 8px;
         }
         ::-webkit-scrollbar-thumb {
             background: #c7d2fe;
-            border-radius: 10px;
+            border-radius: 8px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #a5b4fc;
         }
+        :focus-visible {
+            outline: 2px solid #4f46e5;
+            outline-offset: 2px;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        .setup-panel {
+            background: linear-gradient(180deg, #ffffff 0%, #fffbeb 85%);
+            border-width: 3px;
+        }
+        .theme-hero-card {
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 14px 36px -10px rgba(79, 70, 229, 0.28);
+            transition: background 0.35s cubic-bezier(0.22, 1, 0.36, 1), transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+        }
+        .theme-hero-card.is-pulse {
+            transform: scale(1.04);
+            box-shadow: 0 18px 40px -8px rgba(79, 70, 229, 0.35);
+        }
+        .theme-btn {
+            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+        }
+        .theme-btn[aria-pressed="true"] {
+            transform: scale(1.06);
+            box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.12);
+        }
+        .play-cta {
+            background-color: oklch(55% 0.14 65);
+            color: oklch(99% 0.01 90);
+            box-shadow: 0 10px 28px -6px oklch(48% 0.14 60 / 0.35);
+        }
+        .play-cta:hover {
+            background-color: oklch(48% 0.14 60);
+            box-shadow: 0 14px 32px -6px oklch(42% 0.14 55 / 0.4);
+        }
+        .btn-cta-amber {
+            background-color: oklch(55% 0.14 65);
+            color: oklch(99% 0.01 90);
+        }
+        .btn-cta-amber:hover {
+            background-color: oklch(48% 0.14 60);
+        }
+        .setup-section-label {
+            letter-spacing: 0.12em;
+        }
+        .setup-layout {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1.25rem, 3vw, 2rem);
+        }
+        .setup-section-head {
+            margin-bottom: 0.75rem;
+        }
+        .setup-chip-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.625rem;
+        }
+        .setup-difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.625rem;
+        }
+        .setup-diff-summary {
+            margin-top: 0.75rem;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: oklch(42% 0.1 277);
+        }
+        .setup-cta-zone {
+            padding-top: 1rem;
+            margin-top: 0.25rem;
+            border-top: 1px solid #e0e7ff;
+        }
+        .setup-more-toggle {
+            margin-top: 0.75rem;
+            width: 100%;
+        }
+        @media (min-width: 480px) {
+            .setup-difficulty-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 768px) {
+            .setup-panel {
+                overflow: visible;
+            }
+            .setup-chip-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+            .setup-chip-grid .theme-btn {
+                min-height: 3.5rem;
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+            .setup-layout {
+                display: grid;
+                grid-template-columns: minmax(10rem, 1fr) minmax(0, 1.65fr);
+                grid-template-areas:
+                    "hero theme"
+                    "hero difficulty"
+                    "cta cta";
+                column-gap: 2rem;
+                row-gap: 1.25rem;
+                align-items: start;
+            }
+            .setup-hero-zone {
+                grid-area: hero;
+            }
+            .setup-hero-zone .theme-hero-card {
+                margin-left: 0;
+                margin-right: auto;
+            }
+            .setup-theme-zone { grid-area: theme; }
+            .setup-difficulty-zone { grid-area: difficulty; }
+            .setup-cta-zone {
+                grid-area: cta;
+                padding-top: 1.25rem;
+                margin-top: 0.5rem;
+            }
+            .setup-diff-summary { text-align: left; }
+            .setup-more-toggle { width: auto; }
+        }
+        .header-bar {
+            background: oklch(99.2% 0.006 277);
+            border-color: oklch(91% 0.018 277);
+            box-shadow: 0 1px 2px oklch(0% 0 0 / 0.04);
+        }
+        .header-mark {
+            background: oklch(98% 0.01 277);
+            border-color: oklch(90% 0.022 277);
+        }
+        .hud-pill {
+            background: oklch(99% 0.005 277);
+            border: 1px solid oklch(91% 0.018 277);
+        }
+        .hud-pill-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .hud-pill-value {
+            font-family: 'Margarine', cursive;
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            line-height: 1.1;
+        }
+        .hud-pill--flips .hud-pill-label { color: oklch(52% 0.09 350); }
+        .hud-pill--flips .hud-pill-value { color: oklch(44% 0.11 350); }
+        .hud-pill--pairs .hud-pill-label { color: oklch(48% 0.08 180); }
+        .hud-pill--pairs .hud-pill-value { color: oklch(40% 0.1 180); }
+        .hud-pill--score .hud-pill-label,
+        .hud-pill--best .hud-pill-label { color: oklch(52% 0.09 75); }
+        .hud-pill--score .hud-pill-value,
+        .hud-pill--best .hud-pill-value { color: oklch(44% 0.11 70); }
+        .header-action {
+            background: oklch(58% 0.11 160);
+            border: 1px solid oklch(52% 0.1 160);
+            color: oklch(99% 0.01 160);
+        }
+        .header-action:hover {
+            background: oklch(52% 0.11 160);
+        }
+        .header-audio {
+            background: oklch(98% 0.01 277);
+            border: 1px solid oklch(90% 0.022 277);
+            color: oklch(48% 0.08 277);
+        }
+        .header-audio:hover {
+            background: oklch(96% 0.015 277);
+        }
+        .header-audio.is-muted {
+            background: oklch(97% 0.015 15);
+            border-color: oklch(88% 0.04 15);
+            color: oklch(50% 0.1 15);
+        }
+        .header-audio.is-muted:hover {
+            background: oklch(95% 0.02 15);
+        }
+        .header-bar--cheer {
+            overflow: hidden;
+        }
+        .header-bar--cheer .header-cheer-viewport {
+            height: 1.25rem;
+            overflow: hidden;
+            margin-top: 0.125rem;
+        }
+        .header-bar--cheer .header-cheer-track {
+            display: flex;
+            flex-direction: column;
+            animation: hdr-cheer-cycle 7.4s ease-in-out infinite;
+        }
+        .header-bar--cheer .header-cheer-line {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: oklch(42% 0.1 277);
+            line-height: 1.25rem;
+            white-space: nowrap;
+        }
+        .header-bar--cheer .header-mark-emoji {
+            display: inline-block;
+        }
+        @keyframes hdr-cheer-cycle {
+            0%, 22% { transform: translateY(0); }
+            28%, 47% { transform: translateY(-1.25rem); }
+            53%, 72% { transform: translateY(-2.5rem); }
+            78%, 97% { transform: translateY(-3.75rem); }
+            100% { transform: translateY(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .header-bar--cheer .header-cheer-track { animation: none; }
+        }
     </style>
 </head>
-<body class="min-h-dvh flex flex-col items-center p-3 md:p-6 bg-gradient-to-b from-indigo-100 via-purple-50 to-pink-100 overflow-x-hidden">
+<body class="min-h-dvh flex flex-col items-center p-3 md:p-6 overflow-x-hidden">
 
     <!-- Header & Scoreboard HUD -->
-    <header class="w-full max-w-4xl shrink-0 bg-white/80 backdrop-blur-md rounded-2xl md:rounded-3xl p-4 shadow-xl border-4 border-white flex flex-wrap items-center justify-center lg:justify-between gap-4 z-10">
+    <header class="header-bar header-bar--cheer w-full max-w-4xl shrink-0 rounded-2xl p-3.5 md:p-4 border flex flex-wrap items-center justify-center lg:justify-between gap-3 md:gap-4 z-10">
         <div class="w-full lg:w-auto flex items-center justify-center gap-3">
-            <div class="bg-gradient-to-r from-yellow-400 to-orange-400 p-2.5 rounded-2xl shadow-md transform -rotate-6 hover:rotate-6 transition-transform">
-                <span class="text-3xl">🦁</span>
+            <div class="header-mark p-2 rounded-xl border" aria-hidden="true">
+                <span class="header-mark-emoji text-2xl md:text-3xl">🦁</span>
             </div>
             <div>
-                <h1 class="text-2xl md:text-3xl font-playful text-indigo-600 tracking-wide drop-shadow-sm leading-none">Animal Match</h1>
-                <p class="text-xs md:text-sm font-bold text-indigo-400 mt-1">Memory adventure for kids!</p>
+                <h1 class="text-2xl md:text-3xl font-playful text-indigo-900/90 leading-none">Animal Match</h1>
+                <div class="header-cheer-viewport" aria-live="polite">
+                    <div class="header-cheer-track">
+                        <span class="header-cheer-line">Memory adventure for kids!</span>
+                        <span class="header-cheer-line">You've got this, champ!</span>
+                        <span class="header-cheer-line">Find those matching pairs!</span>
+                        <span class="header-cheer-line">Every flip is practice!</span>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <!-- HUD Statistics & Controls -->
-        <div class="w-full lg:w-auto flex items-center justify-center gap-2 md:gap-4 flex-wrap">
-            <div class="bg-pink-100 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-2 border-pink-200 text-center">
-                <span class="text-xs font-bold text-pink-500 block uppercase tracking-wider">Flips</span>
-                <span id="moves-val" class="text-xl md:text-2xl font-playful text-pink-600">0</span>
+        <div class="w-full lg:w-auto flex items-center justify-center gap-2 md:gap-2.5 flex-wrap">
+            <div class="hud-pill hud-pill--flips px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl text-center min-w-[4.25rem]">
+                <span class="hud-pill-label block">Flips</span>
+                <span id="moves-val" class="hud-pill-value">0</span>
             </div>
-            <div class="bg-amber-100 px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-2 border-amber-200 text-center hidden sm:block">
-                <span class="text-xs font-bold text-amber-500 block uppercase tracking-wider">Best Score</span>
-                <span id="best-val" class="text-xl md:text-2xl font-playful text-amber-600">-</span>
+            <div class="hud-pill hud-pill--pairs px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl text-center min-w-[4.25rem]">
+                <span class="hud-pill-label block">Pairs Left</span>
+                <span id="pairs-val" class="hud-pill-value">0</span>
             </div>
-
-            <!-- Start New Game Button -->
-            <button onclick="resetToMenu()" class="p-2.5 md:px-4 md:py-2.5 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-white font-playful text-sm rounded-xl transition-all shadow-md transform hover:scale-105 active:scale-95 flex items-center gap-1.5 border-2 border-emerald-300" title="Start New Game">
-                <span>🔄</span>
+            <div id="score-pill" class="hud-pill hud-pill--score px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl text-center min-w-[4.25rem] hidden">
+                <span class="hud-pill-label block">Score</span>
+                <span id="score-val" class="hud-pill-value">-</span>
+            </div>
+            <div id="best-pill" class="hud-pill hud-pill--best px-3 py-1.5 md:px-3.5 md:py-2 rounded-xl text-center min-w-[4.25rem]">
+                <span class="hud-pill-label block">Best</span>
+                <span id="best-val" class="hud-pill-value">-</span>
+            </div>
+            <button type="button" onclick="resetToMenu()" class="header-action min-h-11 min-w-11 p-2.5 md:px-4 md:py-2.5 font-playful text-sm rounded-xl transition-colors active:scale-[0.98] flex items-center gap-1.5" aria-label="Start new game">
+                <span aria-hidden="true">🔄</span>
                 <span class="hidden md:inline">New Game</span>
             </button>
-
-            <!-- Audio Control -->
-            <button id="audio-toggle" class="p-2.5 bg-indigo-100 hover:bg-indigo-200 border-2 border-indigo-200 text-indigo-600 rounded-xl transition-all shadow-sm flex items-center justify-center transform hover:scale-105 active:scale-95" title="Mute/Unmute Sounds">
-                <svg id="audio-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <button type="button" id="audio-toggle" class="header-audio min-h-11 min-w-11 p-2.5 rounded-xl transition-colors flex items-center justify-center active:scale-[0.98]" aria-label="Mute sounds" aria-pressed="false">
+                <svg id="audio-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                 </svg>
             </button>
@@ -80,150 +322,103 @@
     <!-- Main Game Workspace -->
     <main class="relative w-full max-w-4xl flex-1 flex flex-col items-center my-2 md:my-4 min-h-0">
         <!-- Interactive Theme / Setup Screen overlay -->
-        <div id="setup-screen" class="w-full bg-white/95 backdrop-blur-lg rounded-3xl border-4 border-indigo-200 shadow-2xl flex flex-col items-center p-4 sm:p-6 md:absolute md:inset-0 md:justify-center md:p-12 z-20 transition-all duration-300 overflow-y-auto">
-            <div class="text-center max-w-2xl w-full">
-                <h2 class="text-2xl sm:text-3xl md:text-5xl font-playful text-indigo-700 mb-1 md:mb-2 tracking-wide drop-shadow-sm">Choose Your Adventure!</h2>
-                <p class="text-xs sm:text-sm md:text-base font-bold text-indigo-400 mb-4 md:mb-6">Pick your favorite animals and difficulty to start matching!</p>
-                
-                <!-- Theme Selectors -->
-                <div class="mb-4 md:mb-6">
-                    <h3 class="text-lg font-playful text-indigo-600 mb-3 flex items-center justify-center gap-2">
-                        <span>✨</span> Theme Category <span>✨</span>
-                    </h3>
-                    <div class="flex flex-wrap justify-center gap-4">
-                        <button onclick="selectTheme('safari')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-safari">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦁</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Safari</span>
-                        </button>
-                        <button onclick="selectTheme('forest')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-forest">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦊</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Forest</span>
-                        </button>
-                        <button onclick="selectTheme('ocean')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-ocean">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🐬</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Ocean</span>
-                        </button>
-                        <button onclick="selectTheme('pets')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-pets">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🐶</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Pets</span>
-                        </button>
-                        <button onclick="selectTheme('clothing')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-clothing">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">👕</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Clothing</span>
-                        </button>
-                        <button onclick="selectTheme('fruit')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-fruit">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🍎</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Fruit</span>
-                        </button>
-                        <button onclick="selectTheme('vehicles')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-vehicles">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🚀</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Vehicles</span>
-                        </button>
-                        <button onclick="selectTheme('fantasy')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-fantasy">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦖</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Fantasy</span>
-                        </button>
-                        <button onclick="selectTheme('toys')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-toys">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🧸</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Toys</span>
-                        </button>
-                        <button onclick="selectTheme('nature')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-nature">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🌈</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Nature</span>
-                        </button>
-                        <button onclick="selectTheme('insects')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-insects">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦋</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Insects</span>
-                        </button>
-                        <button onclick="selectTheme('sweets')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-sweets">
-                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🍭</span>
-                            <span class="font-bold text-indigo-700 text-sm md:text-base">Sweets</span>
-                        </button>
-                    </div>
-                </div>
+        <div id="setup-screen" class="setup-panel w-full rounded-2xl border-indigo-200 shadow-xl flex flex-col items-center p-5 sm:p-7 md:absolute md:inset-x-0 md:top-0 md:bottom-auto md:min-h-full md:h-auto md:justify-center md:p-8 lg:p-10 z-20 transition-opacity duration-300 max-md:overflow-y-auto">
 
-                <!-- Difficulty Selectors -->
-                <div class="mb-5 md:mb-8">
-                    <h3 class="text-lg font-playful text-indigo-600 mb-3 flex items-center justify-center gap-2">
-                        <span>🌟</span> Match Difficulty <span>🌟</span>
-                    </h3>
-                    <div class="grid grid-cols-2 gap-3 max-w-lg mx-auto">
-                        <button onclick="selectDifficulty('easy')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-green-200 bg-green-50 hover:bg-green-100 text-green-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-easy">
-                            Easy (3 Pairs - 2x3)
-                        </button>
-                        <button onclick="selectDifficulty('medium')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-medium">
-                            Medium (6 Pairs - 3x4)
-                        </button>
-                        <button onclick="selectDifficulty('hard')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-hard">
-                            Hard (8 Pairs - 4x4)
-                        </button>
-                        <button onclick="selectDifficulty('expert')" class="diff-btn px-4 py-2.5 rounded-2xl border-4 border-purple-200 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs md:text-sm shadow-md transition-all active:scale-95" id="diff-expert">
-                            Expert (12 Pairs - 6x4)
-                        </button>
+            <div class="setup-layout w-full max-w-lg md:max-w-3xl mx-auto">
+                <section id="theme-hero" class="setup-hero-zone text-center md:text-left" aria-live="polite">
+                    <div id="theme-hero-card" class="theme-hero-card mx-auto md:mx-0 w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-3xl flex items-center justify-center" style="background: linear-gradient(135deg, #f59e0b, #ec4899);">
+                        <span id="theme-hero-emoji" class="text-6xl sm:text-7xl leading-none select-none" aria-hidden="true">🦁</span>
                     </div>
-                </div>
+                    <h2 id="theme-hero-label" class="mt-4 text-3xl sm:text-4xl font-playful text-indigo-900 leading-tight">Safari</h2>
+                    <p class="mt-2 text-sm sm:text-base font-bold ink-secondary max-w-xs md:max-w-none mx-auto md:mx-0">Pick a theme, then choose how many pairs to match</p>
+                </section>
 
-                <!-- Big Magical Play Button -->
-                <button onclick="startGame()" class="px-8 sm:px-12 py-3 md:py-5 bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 hover:from-yellow-500 hover:to-pink-600 text-white font-playful text-xl md:text-3xl rounded-full shadow-2xl transform hover:scale-105 active:scale-95 transition-all border-4 border-white inline-flex items-center gap-3">
-                    Let's Play! 🚀
-                </button>
+                <section class="setup-theme-zone">
+                    <div class="setup-section-head">
+                        <p class="setup-section-label text-[0.65rem] font-bold uppercase ink-secondary">Pick a theme</p>
+                    </div>
+                    <div id="theme-grid-featured" class="setup-chip-grid"></div>
+                    <button type="button" id="more-themes-toggle" onclick="toggleMoreThemes()" class="setup-more-toggle min-h-11 px-4 py-2 text-sm font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-full transition-colors active:scale-[0.98]" aria-expanded="false">
+                        More themes (6) ▾
+                    </button>
+                    <div id="theme-grid-more" class="hidden setup-chip-grid mt-3"></div>
+                </section>
+
+                <section class="setup-difficulty-zone">
+                    <div class="setup-section-head">
+                        <p class="setup-section-label text-[0.65rem] font-bold uppercase ink-secondary">How many pairs?</p>
+                    </div>
+                    <div id="difficulty-grid" class="setup-difficulty-grid"></div>
+                    <p id="diff-summary" class="setup-diff-summary" aria-live="polite"></p>
+                </section>
+
+                <div class="setup-cta-zone">
+                    <button type="button" id="play-cta" onclick="startGame()" class="play-cta w-full min-h-14 px-10 py-4 font-playful text-2xl sm:text-3xl rounded-full active:scale-[0.98] transition-all inline-flex items-center justify-center gap-2.5">
+                        Let's match 6 pairs! <span class="text-2xl sm:text-3xl" aria-hidden="true">🚀</span>
+                    </button>
+                </div>
             </div>
+
         </div>
 
         <!-- Canvas Container -->
-        <div id="game-board" class="relative w-full aspect-[4/3] max-md:hidden bg-white rounded-3xl border-4 md:border-8 border-indigo-400/90 shadow-2xl overflow-hidden flex items-center justify-center">
-            <canvas id="game-canvas" class="w-full h-full block cursor-pointer"></canvas>
+        <div id="game-board" class="relative w-full aspect-[4/3] max-md:hidden bg-white rounded-2xl border-2 border-indigo-200 shadow-md overflow-hidden flex items-center justify-center">
+            <p id="game-controls-hint" class="absolute top-4 max-md:hidden w-full text-center text-xs font-semibold ink-secondary px-3" hidden>
+                Click cards or use arrow keys and Enter to flip.
+            </p>
+            <canvas id="game-canvas" class="w-full h-full block cursor-pointer rounded-2xl" tabindex="0" role="application" aria-label="Memory card game" aria-describedby="canvas-controls-desc"></canvas>
         </div>
+        <p id="canvas-controls-desc" class="sr-only">Tap or click cards to find matching pairs. On keyboard, use arrow keys to move between cards and Enter or Space to flip.</p>
+        <div id="game-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
         <!-- Victory Popup Overlay -->
-        <div id="victory-screen" class="fixed inset-0 md:absolute md:inset-0 bg-indigo-950/75 backdrop-blur-md md:rounded-3xl flex items-start md:items-center justify-center p-3 sm:p-6 z-50 md:z-30 transition-opacity duration-500 opacity-0 pointer-events-none overflow-y-auto">
-            <div class="bg-white rounded-3xl p-4 sm:p-6 md:p-10 max-w-md w-full text-center border-4 border-yellow-400 shadow-2xl relative overflow-visible my-auto md:my-0" id="victory-card">
+        <div id="victory-screen" class="fixed inset-0 md:absolute md:inset-0 bg-indigo-900/60 md:rounded-2xl flex items-start md:items-center justify-center p-3 sm:p-6 z-50 md:z-30 transition-opacity duration-500 opacity-0 pointer-events-none overflow-y-auto" role="dialog" aria-modal="true" aria-labelledby="victory-title" aria-describedby="victory-desc victory-stars-label" aria-hidden="true" inert>
+            <div class="bg-white rounded-2xl p-4 sm:p-6 md:p-8 max-w-md w-full text-center border border-amber-200 shadow-lg relative overflow-visible my-auto md:my-0 min-w-0" id="victory-card">
                 
-                <!-- Confetti Cannon graphics inside HTML -->
-                <div class="absolute top-2 left-2 text-3xl md:text-4xl animate-bounce">🎉</div>
-                <div class="absolute top-2 right-2 text-3xl md:text-4xl animate-bounce delay-150">🎉</div>
+                <div class="text-3xl mb-2" aria-hidden="true">🎉</div>
                 
-                <h2 class="text-3xl md:text-4xl font-playful text-yellow-500 mb-1 drop-shadow pt-1">Amazing Job!</h2>
-                <p class="text-indigo-400 font-bold text-xs sm:text-sm mb-4 md:mb-6 uppercase tracking-wider">Puzzle Completed Successfully</p>
+                <h2 id="victory-title" class="text-2xl md:text-3xl font-playful text-amber-600 mb-1">Amazing Job!</h2>
+                <p id="victory-desc" class="ink-secondary font-semibold text-sm mb-4 md:mb-6">You matched every pair!</p>
+                <p id="victory-stars-label" class="sr-only">Star rating</p>
 
                 <!-- Stars Render Area -->
-                <div class="flex justify-center gap-2 md:gap-3 mb-4 md:mb-6" id="victory-stars">
-                    <span class="text-4xl md:text-5xl text-gray-300 filter drop-shadow" id="star-1">★</span>
-                    <span class="text-5xl md:text-6xl text-gray-300 filter drop-shadow -mt-1 md:-mt-2" id="star-2">★</span>
-                    <span class="text-4xl md:text-5xl text-gray-300 filter drop-shadow" id="star-3">★</span>
+                <div class="flex justify-center gap-2 md:gap-3 mb-4 md:mb-6" id="victory-stars" role="presentation" aria-hidden="true">
+                    <span class="text-4xl md:text-5xl text-gray-300" id="star-1">★</span>
+                    <span class="text-5xl md:text-6xl text-gray-300 -mt-1 md:-mt-2" id="star-2">★</span>
+                    <span class="text-4xl md:text-5xl text-gray-300" id="star-3">★</span>
                 </div>
 
                 <!-- Statistics List -->
-                <div class="bg-indigo-50 rounded-2xl p-3 sm:p-4 border-2 border-indigo-100 mb-4 md:mb-6 text-left space-y-2 text-sm sm:text-base">
-                    <div class="flex justify-between gap-3 font-bold">
-                        <span class="text-indigo-500 shrink-0">Theme:</span>
-                        <span id="stat-theme" class="text-indigo-800 capitalize text-right">Safari</span>
+                <div class="bg-indigo-50 rounded-2xl p-3 sm:p-4 border border-indigo-100 mb-4 md:mb-6 text-left space-y-2 text-sm sm:text-base">
+                    <div class="flex justify-between gap-3 font-bold min-w-0">
+                        <span class="ink-secondary shrink-0">Theme:</span>
+                        <span id="stat-theme" class="text-indigo-800 capitalize text-right min-w-0 break-words">Safari</span>
                     </div>
-                    <div class="flex justify-between gap-3 font-bold">
-                        <span class="text-indigo-500 shrink-0">Difficulty:</span>
-                        <span id="stat-diff" class="text-indigo-800 capitalize text-right">Medium</span>
+                    <div class="flex justify-between gap-3 font-bold min-w-0">
+                        <span class="ink-secondary shrink-0">Difficulty:</span>
+                        <span id="stat-diff" class="text-indigo-800 capitalize text-right min-w-0 break-words">Medium</span>
                     </div>
-                    <div class="flex justify-between gap-3 font-bold">
-                        <span class="text-indigo-500 shrink-0">Flips Done:</span>
-                        <span id="stat-moves" class="text-pink-600 text-right">0</span>
+                    <div class="flex justify-between gap-3 font-bold min-w-0">
+                        <span class="ink-secondary shrink-0">Flips Done:</span>
+                        <span id="stat-moves" class="text-indigo-800 text-right tabular-nums">0</span>
                     </div>
-                    <div class="flex justify-between gap-3 font-bold">
-                        <span class="text-indigo-500 shrink-0">Score:</span>
-                        <span id="stat-score" class="text-amber-600 text-right">0 / 100</span>
+                    <div class="flex justify-between gap-3 font-bold min-w-0">
+                        <span class="ink-secondary shrink-0">Score:</span>
+                        <span id="stat-score" class="text-indigo-800 text-right tabular-nums">0 / 100</span>
                     </div>
-                    <div class="flex justify-between gap-3 font-bold border-t border-indigo-200/50 pt-2">
-                        <span class="text-indigo-500 shrink-0">Rank Achieved:</span>
-                        <span id="stat-rating" class="text-yellow-500 text-right leading-snug">Super Matcher! 🏆</span>
+                    <div class="flex justify-between gap-3 font-bold border-t border-indigo-200/50 pt-2 min-w-0">
+                        <span class="ink-secondary shrink-0">Rank Achieved:</span>
+                        <span id="stat-rating" class="text-amber-600 text-right leading-snug min-w-0 max-w-[65%] break-words">Super Matcher! 🏆</span>
                     </div>
                 </div>
 
                 <!-- Victory Buttons -->
                 <div class="flex flex-col md:flex-row gap-3">
-                    <button onclick="resetToMenu()" class="flex-1 px-5 py-3.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-playful text-base rounded-2xl shadow-md transition-all active:scale-95">
-                        Back to Menu 🏠
+                    <button type="button" id="victory-menu-btn" onclick="resetToMenu()" class="flex-1 min-h-11 px-5 py-3.5 bg-white hover:bg-indigo-50 text-indigo-700 font-playful text-base rounded-xl border border-indigo-200 transition-colors active:scale-95">
+                        Back to Menu <span aria-hidden="true">🏠</span>
                     </button>
-                    <button onclick="playAgain()" class="flex-1 px-5 py-3.5 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-playful text-lg rounded-2xl shadow-lg transition-all active:scale-95 border-2 border-white">
-                        Play Again! 🔄
+                    <button type="button" id="victory-play-again-btn" onclick="playAgain()" class="btn-cta-amber flex-1 min-h-11 px-5 py-3.5 font-playful text-lg rounded-xl transition-colors active:scale-95">
+                        Play Again! <span aria-hidden="true">🔄</span>
                     </button>
                 </div>
             </div>
@@ -231,10 +426,10 @@
     </main>
 
     <!-- Footer -->
-    <footer class="w-full shrink-0 text-center py-2 text-indigo-400/80 font-semibold text-xs flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+    <footer class="w-full shrink-0 text-center py-2 ink-secondary font-medium text-xs flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] select-text">
         <span>Made with 💖 for happy kids</span>
         <span>•</span>
-        <span>Tap cards to uncover matching pairs!</span>
+        <span id="footer-game-hint">Tap cards to uncover matching pairs!</span>
     </footer>
 
     <!-- Game Script Block -->
@@ -283,6 +478,71 @@
             expert: { cols: 6, rows: 4, pairs: 12 }
         };
 
+        const SETUP_THEMES = {
+            featured: [
+                { id: 'safari', emoji: '🦁', label: 'Safari' },
+                { id: 'forest', emoji: '🦊', label: 'Forest' },
+                { id: 'ocean', emoji: '🐬', label: 'Ocean' },
+                { id: 'pets', emoji: '🐶', label: 'Pets' },
+                { id: 'fantasy', emoji: '🦖', label: 'Fantasy' },
+                { id: 'toys', emoji: '🧸', label: 'Toys' }
+            ],
+            more: [
+                { id: 'vehicles', emoji: '🚀', label: 'Vehicles' },
+                { id: 'fruit', emoji: '🍎', label: 'Fruit' },
+                { id: 'nature', emoji: '🌈', label: 'Nature' },
+                { id: 'insects', emoji: '🦋', label: 'Insects' },
+                { id: 'clothing', emoji: '👕', label: 'Clothing' },
+                { id: 'sweets', emoji: '🍭', label: 'Sweets' }
+            ]
+        };
+
+        const THEME_ACCENTS = {
+            safari:   { from: '#f59e0b', to: '#ec4899', bg: '#fff7ed', border: '#f59e0b', text: '#c2410c' },
+            forest:   { from: '#10b981', to: '#3b82f6', bg: '#ecfdf5', border: '#10b981', text: '#047857' },
+            ocean:    { from: '#06b6d4', to: '#4f46e5', bg: '#ecfeff', border: '#0891b2', text: '#0e7490' },
+            pets:     { from: '#f43f5e', to: '#fbbf24', bg: '#fff1f2', border: '#f43f5e', text: '#be123c' },
+            clothing: { from: '#a855f7', to: '#6366f1', bg: '#faf5ff', border: '#a855f7', text: '#7e22ce' },
+            fruit:    { from: '#84cc16', to: '#f59e0b', bg: '#f7fee7', border: '#84cc16', text: '#4d7c0f' },
+            vehicles: { from: '#ef4444', to: '#f97316', bg: '#fef2f2', border: '#ef4444', text: '#b91c1c' },
+            fantasy:  { from: '#d946ef', to: '#c084fc', bg: '#fdf4ff', border: '#d946ef', text: '#a21caf' },
+            toys:     { from: '#0d9488', to: '#facc15', bg: '#f0fdfa', border: '#0d9488', text: '#0f766e' },
+            nature:   { from: '#38bdf8', to: '#f472b6', bg: '#f0f9ff', border: '#38bdf8', text: '#0369a1' },
+            insects:  { from: '#a3e635', to: '#047857', bg: '#f7fee7', border: '#65a30d', text: '#365314' },
+            sweets:   { from: '#ff4f81', to: '#ffc0a9', bg: '#fff1f2', border: '#ff4f81', text: '#be185d' }
+        };
+
+        const DIFF_IDS = ['easy', 'medium', 'hard', 'expert'];
+
+        const DIFF_COPY = {
+            easy:   { label: 'Easy' },
+            medium: { label: 'Medium', recommended: true },
+            hard:   { label: 'Hard' },
+            expert: { label: 'Expert' }
+        };
+
+        const DIFF_BASE = {
+            easy:   'diff-btn w-full flex flex-col items-center justify-center gap-0.5 min-h-[4.25rem] px-3 py-2.5 rounded-xl border-2 border-emerald-100 bg-white hover:bg-emerald-50 text-emerald-800 font-bold text-sm transition-all active:scale-[0.98]',
+            medium: 'diff-btn w-full flex flex-col items-center justify-center gap-0.5 min-h-[4.25rem] px-3 py-2.5 rounded-xl border-2 border-amber-100 bg-white hover:bg-amber-50 text-amber-800 font-bold text-sm transition-all active:scale-[0.98]',
+            hard:   'diff-btn w-full flex flex-col items-center justify-center gap-0.5 min-h-[4.25rem] px-3 py-2.5 rounded-xl border-2 border-rose-100 bg-white hover:bg-rose-50 text-rose-800 font-bold text-sm transition-all active:scale-[0.98]',
+            expert: 'diff-btn w-full flex flex-col items-center justify-center gap-0.5 min-h-[4.25rem] px-3 py-2.5 rounded-xl border-2 border-purple-100 bg-white hover:bg-purple-50 text-purple-800 font-bold text-sm transition-all active:scale-[0.98]'
+        };
+
+        const DIFF_ACTIVE = {
+            easy:   'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-200 scale-105 shadow-md',
+            medium: 'border-amber-500 bg-amber-50 ring-2 ring-amber-200 scale-105 shadow-md',
+            hard:   'border-rose-500 bg-rose-50 ring-2 ring-rose-200 scale-105 shadow-md',
+            expert: 'border-purple-500 bg-purple-50 ring-2 ring-purple-200 scale-105 shadow-md'
+        };
+
+        let moreThemesOpen = false;
+        let keyboardFocusIndex = 0;
+        let victoryDialogOpen = false;
+        let victoryReturnFocus = null;
+        let victoryActionLocked = false;
+        let lastVictorySrSummary = '';
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         // Application State Management
         let selectedTheme = 'safari';
         let selectedDiff = 'medium';
@@ -302,36 +562,56 @@
             if (saved) bestScores = JSON.parse(saved);
         } catch(e) { console.error(e); }
 
-        const STAR_BASE_SCORES = { 1: 70, 2: 85, 3: 95 };
+        const STAR_BASE_SCORES = { 1: 55, 2: 75, 3: 95 };
         const STREAK_BONUS = 5;
 
         function getStarRating(moves, diff) {
             let stars = 1;
             let ratingText = "Super Matcher! 🏆";
+            let ratingPlain = "Super Matcher";
 
             if (diff === 'easy') {
-                if (moves <= 4) { stars = 3; ratingText = "Amazing Genius! 🌟🌟🌟"; }
-                else if (moves <= 6) { stars = 2; ratingText = "Superstar Matcher! ⭐⭐"; }
-                else { ratingText = "Keep trying, champ! ⭐"; }
+                if (moves <= 4) { stars = 3; ratingText = "Amazing Genius! 🌟🌟🌟"; ratingPlain = "Amazing Genius"; }
+                else if (moves <= 6) { stars = 2; ratingText = "Superstar Matcher! ⭐⭐"; ratingPlain = "Superstar Matcher"; }
+                else { ratingText = "Keep trying, champ! ⭐"; ratingPlain = "Keep trying, champ"; }
             } else if (diff === 'medium') {
-                if (moves <= 9) { stars = 3; ratingText = "Magnificent Mind! 🌟🌟🌟"; }
-                else if (moves <= 13) { stars = 2; ratingText = "Excellent Focus! ⭐⭐"; }
-                else { ratingText = "Great effort! ⭐"; }
+                if (moves <= 9) { stars = 3; ratingText = "Magnificent Mind! 🌟🌟🌟"; ratingPlain = "Magnificent Mind"; }
+                else if (moves <= 13) { stars = 2; ratingText = "Excellent Focus! ⭐⭐"; ratingPlain = "Excellent Focus"; }
+                else { ratingText = "Great effort! ⭐"; ratingPlain = "Great effort"; }
             } else if (diff === 'hard') {
-                if (moves <= 13) { stars = 3; ratingText = "Absolute Prodigy! 🌟🌟🌟"; }
-                else if (moves <= 19) { stars = 2; ratingText = "Memory Master! ⭐⭐"; }
-                else { ratingText = "Flipped to success! ⭐"; }
+                if (moves <= 13) { stars = 3; ratingText = "Absolute Prodigy! 🌟🌟🌟"; ratingPlain = "Absolute Prodigy"; }
+                else if (moves <= 19) { stars = 2; ratingText = "Memory Master! ⭐⭐"; ratingPlain = "Memory Master"; }
+                else { ratingText = "Flipped to success! ⭐"; ratingPlain = "Flipped to success"; }
             } else {
-                if (moves <= 18) { stars = 3; ratingText = "Ultimate Memory Legend! 🌟🌟🌟"; }
-                else if (moves <= 26) { stars = 2; ratingText = "Supreme Mind Master! ⭐⭐"; }
-                else { ratingText = "Fantastic focus effort! ⭐"; }
+                if (moves <= 18) { stars = 3; ratingText = "Ultimate Memory Legend! 🌟🌟🌟"; ratingPlain = "Ultimate Memory Legend"; }
+                else if (moves <= 26) { stars = 2; ratingText = "Supreme Mind Master! ⭐⭐"; ratingPlain = "Supreme Mind Master"; }
+                else { ratingText = "Fantastic focus effort! ⭐"; ratingPlain = "Fantastic focus effort"; }
             }
 
-            return { stars, ratingText };
+            return { stars, ratingText, ratingPlain };
+        }
+
+        function buildVictoryStarSummary(starCount, ratingPlain, roundScore) {
+            const starWord = starCount === 1 ? 'star' : 'stars';
+            return `${starCount} out of 3 ${starWord} earned. Rank: ${ratingPlain}. Score ${roundScore} out of 100.`;
+        }
+
+        function updateVictoryStarsLabel(starCount, ratingPlain, roundScore) {
+            const starsLabel = document.getElementById('victory-stars-label');
+            if (!starsLabel) return;
+            starsLabel.textContent = buildVictoryStarSummary(starCount, ratingPlain, roundScore);
+        }
+
+        function resetVictoryStarsLabel() {
+            const starsLabel = document.getElementById('victory-stars-label');
+            if (starsLabel) starsLabel.textContent = 'Star rating';
+            const statRating = document.getElementById('stat-rating');
+            if (statRating) statRating.removeAttribute('aria-label');
+            lastVictorySrSummary = '';
         }
 
         function calculateRoundScore(stars, streak) {
-            let score = STAR_BASE_SCORES[stars] || 70;
+            let score = STAR_BASE_SCORES[stars] || 55;
             if (streak >= 2) score += STREAK_BONUS;
             return Math.min(100, score);
         }
@@ -611,37 +891,199 @@
             }
         }
 
-        // Setup Screen theme UI choices toggle active state classes
+        function announce(message) {
+            const live = document.getElementById('game-live');
+            if (live) live.textContent = message;
+        }
+
+        const prefersDesktopControls = window.matchMedia('(min-width: 768px)');
+
+        function updateGameControlHint(isPlaying) {
+            const footerHint = document.getElementById('footer-game-hint');
+            const boardHint = document.getElementById('game-controls-hint');
+            const desktopPlaying = isPlaying && prefersDesktopControls.matches;
+
+            if (footerHint) {
+                footerHint.textContent = isPlaying && prefersDesktopControls.matches
+                    ? 'Click cards or use arrow keys and Enter to flip.'
+                    : 'Tap cards to uncover matching pairs!';
+            }
+            if (boardHint) {
+                boardHint.hidden = !desktopPlaying;
+            }
+        }
+
+        function getThemeMeta(themeId) {
+            const all = [...SETUP_THEMES.featured, ...SETUP_THEMES.more];
+            return all.find(t => t.id === themeId) || { id: themeId, emoji: '🎴', label: themeId };
+        }
+
+        function getThemeLabel(themeId) {
+            return getThemeMeta(themeId).label;
+        }
+
+        function getThemeAccent(themeId) {
+            return THEME_ACCENTS[themeId] || THEME_ACCENTS.safari;
+        }
+
+        function updateThemeHero() {
+            const meta = getThemeMeta(selectedTheme);
+            const accent = getThemeAccent(selectedTheme);
+            const card = document.getElementById('theme-hero-card');
+            const emoji = document.getElementById('theme-hero-emoji');
+            const label = document.getElementById('theme-hero-label');
+
+            if (!card || !emoji || !label) return;
+
+            card.style.background = `linear-gradient(135deg, ${accent.from}, ${accent.to})`;
+            emoji.textContent = meta.emoji;
+            label.textContent = meta.label;
+            label.style.color = accent.text;
+
+            if (!prefersReducedMotion) {
+                card.classList.add('is-pulse');
+                setTimeout(() => card.classList.remove('is-pulse'), 280);
+            }
+        }
+
+        function setScorePillVisible(visible) {
+            document.getElementById('score-pill').classList.toggle('hidden', !visible);
+        }
+
+        function setBestPillVisible(visible) {
+            document.getElementById('best-pill').classList.toggle('hidden', !visible);
+        }
+
+        function setPlayHudMode(isPlaying) {
+            setScorePillVisible(false);
+            setBestPillVisible(!isPlaying);
+        }
+
+        function createThemeButton(theme) {
+            const accent = getThemeAccent(theme.id);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.id = `theme-${theme.id}`;
+            btn.className = 'theme-btn w-full flex flex-col items-center justify-center gap-1 min-h-[4.5rem] px-2 py-2.5 rounded-xl border-2 bg-white hover:border-indigo-300 active:scale-[0.98]';
+            btn.style.borderColor = '#e0e7ff';
+            btn.setAttribute('aria-pressed', 'false');
+            btn.onclick = () => selectTheme(theme.id);
+            btn.innerHTML = `<span class="text-3xl leading-none" aria-hidden="true">${theme.emoji}</span><span class="font-bold text-xs sm:text-sm leading-tight text-center" style="color:${accent.text}">${theme.label}</span>`;
+            return btn;
+        }
+
+        function updateThemePressed() {
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.setAttribute('aria-pressed', btn.id === `theme-${selectedTheme}` ? 'true' : 'false');
+            });
+        }
+
+        function updateDiffPressed() {
+            document.querySelectorAll('.diff-btn').forEach(btn => {
+                btn.setAttribute('aria-pressed', btn.id === `diff-${selectedDiff}` ? 'true' : 'false');
+            });
+        }
+
+        function createDifficultyButton(diffId) {
+            const copy = DIFF_COPY[diffId];
+            const pairs = GAME_CONFIGS[diffId].pairs;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.id = `diff-${diffId}`;
+            btn.className = DIFF_BASE[diffId];
+            btn.setAttribute('aria-pressed', 'false');
+            btn.setAttribute('aria-label', `${copy.label}, ${pairs} pairs${copy.recommended ? ' recommended' : ''}`);
+            btn.onclick = () => selectDifficulty(diffId);
+            btn.innerHTML = `<span class="leading-tight">${copy.label}</span><span class="text-xs font-semibold opacity-80 leading-none">${pairs} pairs</span>`;
+            return btn;
+        }
+
+        function renderDifficultyButtons() {
+            document.getElementById('difficulty-grid').replaceChildren(...DIFF_IDS.map(createDifficultyButton));
+        }
+
+        function updateDiffSummary() {
+            const pairs = GAME_CONFIGS[selectedDiff].pairs;
+            const summaries = {
+                easy: `You'll match ${pairs} pairs — a quick warm-up.`,
+                medium: `You'll match ${pairs} pairs — a great place to start!`,
+                hard: `You'll match ${pairs} pairs — take your time.`,
+                expert: `You'll match ${pairs} pairs — that's a big board!`
+            };
+            const el = document.getElementById('diff-summary');
+            if (el) el.textContent = summaries[selectedDiff] || '';
+        }
+
+        function updatePlayCta() {
+            const pairs = GAME_CONFIGS[selectedDiff].pairs;
+            const btn = document.getElementById('play-cta');
+            if (btn) {
+                btn.innerHTML = `Let's match ${pairs} pairs! <span class="text-2xl sm:text-3xl" aria-hidden="true">🚀</span>`;
+            }
+        }
+
+        function updateSetupCopy() {
+            updateDiffSummary();
+            updatePlayCta();
+        }
+
+        function renderSetupThemes() {
+            const featured = document.getElementById('theme-grid-featured');
+            const more = document.getElementById('theme-grid-more');
+            featured.replaceChildren(...SETUP_THEMES.featured.map(createThemeButton));
+            more.replaceChildren(...SETUP_THEMES.more.map(createThemeButton));
+        }
+
+        function toggleMoreThemes(forceOpen) {
+            const panel = document.getElementById('theme-grid-more');
+            const toggle = document.getElementById('more-themes-toggle');
+            moreThemesOpen = forceOpen === true ? true : forceOpen === false ? false : !moreThemesOpen;
+            panel.classList.toggle('hidden', !moreThemesOpen);
+            toggle.setAttribute('aria-expanded', String(moreThemesOpen));
+            toggle.textContent = moreThemesOpen ? 'Fewer themes ▴' : 'More themes (6) ▾';
+        }
+
+        function ensureThemeVisible(themeId) {
+            if (SETUP_THEMES.more.some(t => t.id === themeId) && !moreThemesOpen) {
+                toggleMoreThemes(true);
+            }
+        }
+
         function selectTheme(themeId) {
             playSfx('click');
             selectedTheme = themeId;
+            ensureThemeVisible(themeId);
             document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('border-indigo-500', 'bg-indigo-100/80', 'ring-4', 'ring-indigo-300');
+                btn.classList.remove('ring-2');
+                btn.style.borderColor = '#e0e7ff';
+                btn.style.backgroundColor = '#ffffff';
+                btn.style.boxShadow = '';
             });
+            const accent = getThemeAccent(themeId);
             const activeBtn = document.getElementById(`theme-${themeId}`);
             if (activeBtn) {
-                activeBtn.classList.add('border-indigo-500', 'bg-indigo-100/80', 'ring-4', 'ring-indigo-300');
+                activeBtn.classList.add('ring-2');
+                activeBtn.style.borderColor = accent.border;
+                activeBtn.style.backgroundColor = accent.bg;
+                activeBtn.style.setProperty('--tw-ring-color', accent.border);
             }
+            updateThemePressed();
+            updateThemeHero();
         }
 
         function selectDifficulty(diffId) {
             playSfx('click');
             selectedDiff = diffId;
             document.querySelectorAll('.diff-btn').forEach(btn => {
-                btn.classList.remove('border-indigo-600', 'bg-indigo-100', 'ring-4', 'ring-indigo-200');
-                // restore their original light custom themes
-                if (btn.id === 'diff-easy') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-green-200');
-                if (btn.id === 'diff-medium') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-amber-200');
-                if (btn.id === 'diff-hard') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-rose-200');
-                if (btn.id === 'diff-expert') btn.className = btn.className.replace(/border-[a-z]+-500/g, 'border-purple-200');
+                const id = btn.id.replace('diff-', '');
+                btn.className = DIFF_BASE[id] || btn.className;
             });
             const activeBtn = document.getElementById(`diff-${diffId}`);
-            if (activeBtn) {
-                if (diffId === 'easy') activeBtn.classList.add('border-green-500', 'ring-4', 'ring-green-200');
-                if (diffId === 'medium') activeBtn.classList.add('border-amber-500', 'ring-4', 'ring-amber-200');
-                if (diffId === 'hard') activeBtn.classList.add('border-rose-500', 'ring-4', 'ring-rose-200');
-                if (diffId === 'expert') activeBtn.classList.add('border-purple-500', 'ring-4', 'ring-purple-200');
+            if (activeBtn && DIFF_ACTIVE[diffId]) {
+                activeBtn.className += ' ' + DIFF_ACTIVE[diffId];
             }
+            updateDiffPressed();
+            updateSetupCopy();
         }
 
         // Initialize state arrays and setup game boards
@@ -689,8 +1131,12 @@
             totalPairs = config.pairs;
             flippedCards = [];
             isBoardLocked = false;
+            keyboardFocusIndex = 0;
 
             document.getElementById('moves-val').innerText = movesCount;
+            document.getElementById('pairs-val').innerText = totalPairs - matchedPairs;
+            document.getElementById('score-val').innerText = '-';
+            setPlayHudMode(true);
 
             const bestKey = `${selectedTheme}_${selectedDiff}`;
             const best = bestScores[bestKey];
@@ -774,24 +1220,104 @@
 
             generateBoard();
             resizeCanvas();
-            
-            // Draw original fresh screen frame
-            requestAnimationFrame(gameLoop);
+            canvas.focus({ preventScroll: true });
+            updateGameControlHint(true);
+            const keyboardNote = prefersDesktopControls.matches
+                ? ' Arrow keys and Enter also work.'
+                : '';
+            announce(`Playing ${getThemeLabel(selectedTheme)}, ${selectedDiff} mode. ${totalPairs} pairs to match.${keyboardNote}`);
+
+            startGameLoop();
+        }
+
+        function getVictoryFocusables() {
+            const card = document.getElementById('victory-card');
+            if (!card) return [];
+            return [...card.querySelectorAll('button')].filter(btn => !btn.disabled);
+        }
+
+        function openVictoryDialog() {
+            const winScr = document.getElementById('victory-screen');
+            if (!winScr) return;
+
+            victoryReturnFocus = document.activeElement;
+            winScr.classList.remove('opacity-0', 'pointer-events-none');
+            winScr.setAttribute('aria-hidden', 'false');
+            winScr.removeAttribute('inert');
+            victoryDialogOpen = true;
+
+            if (lastVictorySrSummary) {
+                const live = document.getElementById('game-live');
+                if (live) {
+                    live.textContent = '';
+                    requestAnimationFrame(() => announce(lastVictorySrSummary));
+                }
+            }
+
+            const playAgainBtn = document.getElementById('victory-play-again-btn');
+            if (playAgainBtn) {
+                playAgainBtn.focus({ preventScroll: true });
+            }
+        }
+
+        function closeVictoryDialog({ focusTarget = null } = {}) {
+            const winScr = document.getElementById('victory-screen');
+            if (winScr) {
+                winScr.classList.add('opacity-0', 'pointer-events-none');
+                winScr.setAttribute('aria-hidden', 'true');
+                winScr.setAttribute('inert', '');
+            }
+            victoryDialogOpen = false;
+
+            const winCard = document.getElementById('victory-card');
+            if (winCard) winCard.classList.remove('scale-90');
+
+            const target = focusTarget || victoryReturnFocus;
+            if (target && typeof target.focus === 'function') {
+                target.focus({ preventScroll: true });
+            }
+            victoryReturnFocus = null;
+            resetVictoryStarsLabel();
+        }
+
+        function handleVictoryDialogKeydown(e) {
+            if (!victoryDialogOpen) return;
+
+            const winScr = document.getElementById('victory-screen');
+            const focusables = getVictoryFocusables();
+            if (!winScr || focusables.length === 0) return;
+
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                resetToMenu();
+                return;
+            }
+
+            if (e.key !== 'Tab') return;
+
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+            const active = document.activeElement;
+
+            if (e.shiftKey) {
+                if (active === first || !winScr.contains(active)) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else if (active === last || !winScr.contains(active)) {
+                e.preventDefault();
+                first.focus();
+            }
         }
 
         function resetToMenu() {
             playSfx('click');
-            // Hide victory screen
-            const winScr = document.getElementById('victory-screen');
-            if (winScr) {
-                winScr.classList.add('opacity-0', 'pointer-events-none');
-            }
-            const winCard = document.getElementById('victory-card');
-            if (winCard) {
-                winCard.classList.remove('scale-90');
-            }
+            closeVictoryDialog();
+            stopGameLoop();
+            clearGameState();
+            setPlayHudMode(false);
+            document.getElementById('score-val').innerText = '-';
 
-            // Show setup overlay
             const setupScr = document.getElementById('setup-screen');
             const gameBoard = document.getElementById('game-board');
             if (setupScr) {
@@ -800,16 +1326,31 @@
             if (gameBoard) {
                 gameBoard.classList.add('max-md:hidden');
             }
+
+            const playCta = document.getElementById('play-cta');
+            if (playCta) playCta.focus({ preventScroll: true });
+            updateGameControlHint(false);
+            announce('Back to menu. Pick a theme and difficulty to play again.');
         }
 
         function playAgain() {
+            if (victoryActionLocked) return;
+            victoryActionLocked = true;
             playSfx('click');
-            const winScr = document.getElementById('victory-screen');
-            winScr.classList.add('opacity-0', 'pointer-events-none');
-            document.getElementById('victory-card').classList.remove('scale-90');
+            closeVictoryDialog({ focusTarget: canvas });
+            setPlayHudMode(true);
+            document.getElementById('score-val').innerText = '-';
 
             generateBoard();
             resizeCanvas();
+            canvas.focus({ preventScroll: true });
+            updateGameControlHint(true);
+            const keyboardNote = prefersDesktopControls.matches
+                ? ' Arrow keys and Enter also work.'
+                : '';
+            announce(`Playing again. ${totalPairs} pairs to match.${keyboardNote}`);
+
+            setTimeout(() => { victoryActionLocked = false; }, 500);
         }
 
         // Render Utilities & Procedural Graphic Drawings
@@ -1019,8 +1560,40 @@
 
         // Animation calculations & Game Tick Loop
         let lastTime = Date.now();
-        
+        let gameLoopActive = false;
+        let gameLoopId = 0;
+
+        function startGameLoop() {
+            if (gameLoopActive) return;
+            gameLoopActive = true;
+            lastTime = Date.now();
+            gameLoopId = requestAnimationFrame(gameLoop);
+        }
+
+        function stopGameLoop() {
+            gameLoopActive = false;
+            if (gameLoopId) {
+                cancelAnimationFrame(gameLoopId);
+                gameLoopId = 0;
+            }
+        }
+
+        function clearGameState() {
+            cards = [];
+            flippedCards = [];
+            particles = [];
+            isBoardLocked = false;
+            keyboardFocusIndex = 0;
+            movesCount = 0;
+            matchedPairs = 0;
+            matchStreak = 0;
+            bestMatchStreak = 0;
+            if (ctx) ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+        }
+
         function gameLoop() {
+            if (!gameLoopActive) return;
+
             const now = Date.now();
             const dt = (now - lastTime) / 1000;
             lastTime = now;
@@ -1087,6 +1660,19 @@
                 ctx.restore();
             }
 
+            if (document.activeElement === canvas && cards.length > 0) {
+                const focusCard = cards[keyboardFocusIndex];
+                if (focusCard) {
+                    ctx.save();
+                    ctx.strokeStyle = '#4f46e5';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    drawRoundedRect(ctx, focusCard.x + 2, focusCard.y + 2, focusCard.width - 4, focusCard.height - 4, focusCard.radius);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+
             // Update & Render particle sprites
             for (let i = particles.length - 1; i >= 0; i--) {
                 const p = particles[i];
@@ -1097,8 +1683,9 @@
                 }
             }
 
-            // Continuous animation looping
-            requestAnimationFrame(gameLoop);
+            if (gameLoopActive) {
+                gameLoopId = requestAnimationFrame(gameLoop);
+            }
         }
 
         // Play sound & flip logic triggers on card click input events
@@ -1166,22 +1753,29 @@
                 const c2X = card2.x + card2.width / 2;
                 const c2Y = card2.y + card2.height / 2;
 
-                spawnBlast(c1X, c1Y, 15, 'star');
-                spawnBlast(c2X, c2Y, 15, 'star');
+                if (!prefersReducedMotion) {
+                    spawnBlast(c1X, c1Y, 15, 'star');
+                    spawnBlast(c2X, c2Y, 15, 'star');
+                }
 
                 flippedCards = [];
                 isBoardLocked = false;
 
-                // Check Win Scenario
+                document.getElementById('pairs-val').innerText = totalPairs - matchedPairs;
+                const pairsLeft = totalPairs - matchedPairs;
+                announce(pairsLeft === 0 ? 'Last pair matched!' : `Match! ${pairsLeft} pair${pairsLeft === 1 ? '' : 's'} left.`);
+
                 if (matchedPairs === totalPairs) {
                     handleVictory();
                 }
             } else {
-                // Not a match, trigger bouncy shake animation, then flip back
                 playSfx('miss');
                 matchStreak = 0;
-                card1.shakeProgress = 1.0;
-                card2.shakeProgress = 1.0;
+                announce('Not a match. Try again.');
+                if (!prefersReducedMotion) {
+                    card1.shakeProgress = 1.0;
+                    card2.shakeProgress = 1.0;
+                }
 
                 setTimeout(() => {
                     card1.isFlipped = false;
@@ -1198,16 +1792,18 @@
         function handleVictory() {
             playSfx('victory');
 
-            // Explode a massive amount of colorful celebration confetti all over the viewport
-            for (let i = 0; i < 4; i++) {
-                setTimeout(() => {
-                    spawnBlast(Math.random() * logicalWidth, Math.random() * (logicalHeight * 0.4), 20, 'square');
-                    spawnBlast(Math.random() * logicalWidth, Math.random() * (logicalHeight * 0.4), 15, 'heart');
-                }, i * 200);
+            if (!prefersReducedMotion) {
+                for (let i = 0; i < 4; i++) {
+                    setTimeout(() => {
+                        spawnBlast(Math.random() * logicalWidth, Math.random() * (logicalHeight * 0.4), 20, 'square');
+                        spawnBlast(Math.random() * logicalWidth, Math.random() * (logicalHeight * 0.4), 15, 'heart');
+                    }, i * 200);
+                }
             }
 
-            const { stars: activeStarsCount, ratingText } = getStarRating(movesCount, selectedDiff);
+            const { stars: activeStarsCount, ratingText, ratingPlain } = getStarRating(movesCount, selectedDiff);
             const roundScore = calculateRoundScore(activeStarsCount, bestMatchStreak);
+            lastVictorySrSummary = buildVictoryStarSummary(activeStarsCount, ratingPlain, roundScore);
 
             const bestKey = `${selectedTheme}_${selectedDiff}`;
             const currentBest = bestScores[bestKey];
@@ -1219,11 +1815,19 @@
                 document.getElementById('best-val').innerText = roundScore;
             }
 
-            document.getElementById('stat-theme').innerText = selectedTheme;
-            document.getElementById('stat-diff').innerText = selectedDiff;
+            setScorePillVisible(true);
+            setBestPillVisible(true);
+            document.getElementById('score-val').innerText = roundScore;
+            document.getElementById('stat-theme').innerText = getThemeLabel(selectedTheme);
+            document.getElementById('stat-diff').innerText = selectedDiff.charAt(0).toUpperCase() + selectedDiff.slice(1);
             document.getElementById('stat-moves').innerText = movesCount;
             document.getElementById('stat-score').innerText = `${roundScore} / 100`;
-            document.getElementById('stat-rating').innerText = ratingText;
+            const statRating = document.getElementById('stat-rating');
+            if (statRating) {
+                statRating.innerText = ratingText;
+                statRating.setAttribute('aria-label', ratingPlain);
+            }
+            updateVictoryStarsLabel(activeStarsCount, ratingPlain, roundScore);
 
             // Render Stars element list
             const star1 = document.getElementById('star-1');
@@ -1231,16 +1835,16 @@
             const star3 = document.getElementById('star-3');
 
             // Reset Star colors helper
-            star1.className = "text-4xl md:text-5xl filter drop-shadow transition-colors duration-500 " + (activeStarsCount >= 1 ? "text-yellow-400" : "text-gray-300");
-            star2.className = "text-5xl md:text-6xl filter drop-shadow -mt-1 md:-mt-2 transition-colors duration-500 " + (activeStarsCount >= 2 ? "text-yellow-400" : "text-gray-300");
-            star3.className = "text-4xl md:text-5xl filter drop-shadow transition-colors duration-500 " + (activeStarsCount >= 3 ? "text-yellow-400" : "text-gray-300");
+            star1.className = "text-4xl md:text-5xl transition-colors duration-500 " + (activeStarsCount >= 1 ? "text-amber-400" : "text-gray-300");
+            star2.className = "text-5xl md:text-6xl -mt-1 md:-mt-2 transition-colors duration-500 " + (activeStarsCount >= 2 ? "text-amber-400" : "text-gray-300");
+            star3.className = "text-4xl md:text-5xl transition-colors duration-500 " + (activeStarsCount >= 3 ? "text-amber-400" : "text-gray-300");
 
-            // Open Victory Screen popup with delay for better user flow
             setTimeout(() => {
-                const winScr = document.getElementById('victory-screen');
-                winScr.classList.remove('opacity-0', 'pointer-events-none');
+                openVictoryDialog();
             }, 1000);
         }
+
+        document.addEventListener('keydown', handleVictoryDialogKeydown);
 
         // Sound Toggle Click Controls
         const audioBtn = document.getElementById('audio-toggle');
@@ -1248,16 +1852,15 @@
 
         audioBtn.addEventListener('click', () => {
             isMuted = !isMuted;
+            audioBtn.setAttribute('aria-pressed', String(isMuted));
             if (isMuted) {
-                audioBtn.classList.remove('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
-                audioBtn.classList.add('bg-rose-100', 'text-rose-600', 'border-rose-200');
-                // Change icon to muted SVG
+                audioBtn.setAttribute('aria-label', 'Unmute sounds');
+                audioBtn.classList.add('is-muted');
                 audioIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6L4.5 9H1.5A1.5 1.5 0 000 10.5v3A1.5 1.5 0 001.5 15h3l4.25 3.25c.62.47 1.5.03 1.5-.75V6.5c0-.78-.88-1.22-1.5-.75L4.5 9z" />`;
                 if (window.speechSynthesis) window.speechSynthesis.cancel();
             } else {
-                audioBtn.classList.add('bg-indigo-100', 'text-indigo-600', 'border-indigo-200');
-                audioBtn.classList.remove('bg-rose-100', 'text-rose-600', 'border-rose-200');
-                // Change icon to playing sound SVG
+                audioBtn.setAttribute('aria-label', 'Mute sounds');
+                audioBtn.classList.remove('is-muted');
                 audioIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />`;
                 initAudio();
             }
@@ -1276,12 +1879,54 @@
             handleBoardClick(touch.clientX, touch.clientY);
         }, { passive: false });
 
+        canvas.addEventListener('keydown', (e) => {
+            if (cards.length === 0) return;
+            const cols = GAME_CONFIGS[selectedDiff].cols;
+            let nextIndex = keyboardFocusIndex;
+
+            switch (e.key) {
+                case 'ArrowRight':
+                    nextIndex = Math.min(cards.length - 1, keyboardFocusIndex + 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowLeft':
+                    nextIndex = Math.max(0, keyboardFocusIndex - 1);
+                    e.preventDefault();
+                    break;
+                case 'ArrowDown':
+                    nextIndex = Math.min(cards.length - 1, keyboardFocusIndex + cols);
+                    e.preventDefault();
+                    break;
+                case 'ArrowUp':
+                    nextIndex = Math.max(0, keyboardFocusIndex - cols);
+                    e.preventDefault();
+                    break;
+                case 'Enter':
+                case ' ':
+                    e.preventDefault();
+                    if (!isBoardLocked) {
+                        const card = cards[keyboardFocusIndex];
+                        if (card && !card.isMatched && !card.isFlipped) flipCard(card);
+                    }
+                    return;
+                default:
+                    return;
+            }
+
+            if (nextIndex !== keyboardFocusIndex) {
+                keyboardFocusIndex = nextIndex;
+                announce(`Card ${keyboardFocusIndex + 1} of ${cards.length}. Press Enter to flip.`);
+            }
+        });
+
         // Handle auto resizing dynamic scaling adjustments smoothly
         window.addEventListener('resize', () => {
             resizeCanvas();
         });
 
-        // Initialize setup screen menu styling
+        // Initialize setup screen
+        renderSetupThemes();
+        renderDifficultyButtons();
         selectTheme('safari');
         selectDifficulty('medium');
     </script>

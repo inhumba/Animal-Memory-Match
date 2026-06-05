@@ -1,0 +1,12 @@
+# Design Context
+
+Before any UI or design work on this project, read:
+
+- `PRODUCT.md` — register, users, brand personality, anti-references, design principles
+- `DESIGN.md` — visual tokens, typography, components, do's and don'ts
+
+**Register:** product (kids memory game UI)
+**North Star:** "The Encouraging Playroom"
+**Stack:** Single-file `index.html`, Tailwind CDN, canvas game engine
+
+Use `/impeccable <command>` for design tasks (critique, polish, live, etc.).

@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-05T00:00:00.000Z",
+  "title": "Design System: Animal Memory Match",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Adventure Indigo",
+        "canonical": "oklch(51% 0.22 277)",
+        "tonalRamp": ["#1e1b4b", "#312e81", "#3730a3", "#4338ca", "#4f46e5", "#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe", "#e0e7ff", "#eef2ff", "#f5f7ff"]
+      },
+      "sky-wash": {
+        "role": "neutral",
+        "displayName": "Sky Wash",
+        "canonical": "oklch(96% 0.02 277)",
+        "tonalRamp": ["#1e1b4b", "#312e81", "#4338ca", "#6366f1", "#818cf8", "#a5b4fc", "#c7d2fe", "#dbe4ff", "#e8edff", "#f0f4ff", "#f5f7ff", "#fafbff"]
+      },
+      "accent-sunrise": {
+        "role": "secondary",
+        "displayName": "Sunrise Gold",
+        "canonical": "oklch(85% 0.18 95)",
+        "tonalRamp": ["#713f12", "#854d0e", "#a16207", "#ca8a04", "#eab308", "#facc15", "#fde047", "#fef08a", "#fef9c3", "#fefce8", "#fffbeb", "#fffef5"]
+      },
+      "accent-pink": {
+        "role": "secondary",
+        "displayName": "Playful Pink",
+        "canonical": "oklch(65% 0.24 350)",
+        "tonalRamp": ["#831843", "#9d174d", "#be185d", "#db2777", "#ec4899", "#f472b6", "#f9a8d4", "#fbcfe8", "#fce7f3", "#fdf2f8", "#fff1f5", "#fff5f8"]
+      },
+      "accent-emerald": {
+        "role": "secondary",
+        "displayName": "Fresh Meadow",
+        "canonical": "oklch(75% 0.15 165)",
+        "tonalRamp": ["#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0", "#d1fae5", "#ecfdf5", "#f0fdf4", "#f7fef9"]
+      },
+      "stat-pink-bg": {
+        "role": "tertiary",
+        "displayName": "Flips Pill",
+        "canonical": "oklch(95% 0.03 350)",
+        "tonalRamp": ["#831843", "#9d174d", "#be185d", "#db2777", "#ec4899", "#f472b6", "#f9a8d4", "#fbcfe8", "#fce7f3", "#fdf2f8", "#fff1f5", "#fff5f8"]
+      },
+      "victory-gold": {
+        "role": "tertiary",
+        "displayName": "Victory Gold",
+        "canonical": "oklch(78% 0.17 95)",
+        "tonalRamp": ["#713f12", "#854d0e", "#a16207", "#ca8a04", "#eab308", "#facc15", "#fde047", "#fef08a", "#fef9c3", "#fefce8", "#fffbeb", "#fffef5"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Playful Display",
+        "purpose": "Headlines, CTAs, score values. Margarine only."
+      },
+      "body": {
+        "displayName": "Readable Body",
+        "purpose": "Instructions, stat labels, theme names. Quicksand bold."
+      },
+      "label": {
+        "displayName": "HUD Label",
+        "purpose": "Short uppercase counters (Flips, Pairs Left). Max 4 words."
+      }
+    },
+    "shadows": [
+      {
+        "name": "panel-lift",
+        "value": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+        "purpose": "Header bar and setup panel floating above sky gradient."
+      },
+      {
+        "name": "hero-lift",
+        "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+        "purpose": "Game board frame, play CTA, victory card."
+      },
+      {
+        "name": "card-canvas",
+        "value": "0 4px 12px rgba(99, 102, 241, 0.15)",
+        "purpose": "Canvas memory card face shadow."
+      }
+    ],
+    "motion": [
+      {
+        "name": "press-feedback",
+        "value": "transform 0.15s ease-out, scale(0.95) on active",
+        "purpose": "All tappable HTML controls."
+      },
+      {
+        "name": "hover-lift",
+        "value": "transform 0.2s ease-out, scale(1.05) on hover",
+        "purpose": "Primary CTAs and icon buttons."
+      },
+      {
+        "name": "overlay-fade",
+        "value": "opacity 0.5s ease-out",
+        "purpose": "Victory screen entrance."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Play CTA",
+      "kind": "button",
+      "refersTo": "button-play",
+      "description": "Hero forward action. One per screen. Sunrise gradient, full pill shape.",
+      "html": "<button class=\"ds-btn-play\">Let's Play! 🚀</button>",
+      "css": ".ds-btn-play { font-family: Margarine, cursive; font-size: 1.5rem; font-weight: 400; color: #ffffff; background: linear-gradient(90deg, #facc15, #fb923c, #ec4899); border: 4px solid #ffffff; border-radius: 9999px; padding: 12px 48px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); cursor: pointer; transition: transform 0.2s ease-out, background 0.2s ease-out; } .ds-btn-play:hover { transform: scale(1.05); background: linear-gradient(90deg, #eab308, #f97316, #db2777); } .ds-btn-play:active { transform: scale(0.95); } .ds-btn-play:focus-visible { outline: 3px solid #4f46e5; outline-offset: 3px; }"
+    },
+    {
+      "name": "New Game Action",
+      "kind": "button",
+      "refersTo": "button-action",
+      "description": "Secondary restart action in header HUD.",
+      "html": "<button class=\"ds-btn-action\">🔄 New Game</button>",
+      "css": ".ds-btn-action { font-family: Margarine, cursive; font-size: 0.875rem; font-weight: 400; color: #ffffff; background: linear-gradient(90deg, #34d399, #14b8a6); border: 2px solid #6ee7b7; border-radius: 12px; padding: 10px 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform 0.2s ease-out, background 0.2s ease-out; } .ds-btn-action:hover { transform: scale(1.05); background: linear-gradient(90deg, #10b981, #0d9488); } .ds-btn-action:active { transform: scale(0.95); } .ds-btn-action:focus-visible { outline: 3px solid #4f46e5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Tertiary navigation like Back to Menu.",
+      "html": "<button class=\"ds-btn-ghost\">Back to Menu 🏠</button>",
+      "css": ".ds-btn-ghost { font-family: Margarine, cursive; font-size: 1rem; color: #4338ca; background: #e0e7ff; border: none; border-radius: 16px; padding: 14px 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform 0.15s ease-out, background 0.15s ease-out; } .ds-btn-ghost:hover { background: #c7d2fe; } .ds-btn-ghost:active { transform: scale(0.95); } .ds-btn-ghost:focus-visible { outline: 3px solid #4f46e5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Theme Selector Card",
+      "kind": "card",
+      "refersTo": "theme-card",
+      "description": "Setup screen theme picker. Emoji-led, indigo spine.",
+      "html": "<button class=\"ds-theme-card\"><span class=\"ds-theme-emoji\">🦁</span><span class=\"ds-theme-label\">Safari</span></button>",
+      "css": ".ds-theme-card { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 144px; padding: 12px 16px; background: #eef2ff; border: 4px solid #e0e7ff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform 0.15s ease-out, border-color 0.15s ease-out, background 0.15s ease-out; } .ds-theme-emoji { font-size: 2.5rem; line-height: 1; transition: transform 0.15s ease-out; } .ds-theme-label { font-family: Quicksand, sans-serif; font-weight: 700; font-size: 0.875rem; color: #4338ca; } .ds-theme-card:hover { border-color: #818cf8; background: rgba(224, 231, 255, 0.5); } .ds-theme-card:hover .ds-theme-emoji { transform: scale(1.1); } .ds-theme-card:active { transform: scale(0.95); } .ds-theme-card.ds-active { border-color: #4f46e5; background: rgba(224, 231, 255, 0.8); box-shadow: 0 0 0 4px #a5b4fc; } .ds-theme-card:focus-visible { outline: 3px solid #4f46e5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Difficulty Chip",
+      "kind": "chip",
+      "refersTo": "theme-card",
+      "description": "Difficulty tier selector with per-tier pastel color.",
+      "html": "<button class=\"ds-diff-chip ds-diff-medium\">Medium (6 Pairs)</button>",
+      "css": ".ds-diff-chip { font-family: Quicksand, sans-serif; font-weight: 700; font-size: 0.875rem; padding: 10px 16px; border-radius: 16px; border: 4px solid #fde68a; background: #fef3c7; color: #b45309; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform 0.15s ease-out; } .ds-diff-chip:hover { background: #fde68a; } .ds-diff-chip:active { transform: scale(0.95); } .ds-diff-chip.ds-active { border-color: #f59e0b; box-shadow: 0 0 0 4px #fde68a; } .ds-diff-chip:focus-visible { outline: 3px solid #4f46e5; outline-offset: 2px; }"
+    },
+    {
+      "name": "HUD Stat Pill",
+      "kind": "chip",
+      "refersTo": "theme-card",
+      "description": "Header counter showing flips, pairs, or best score.",
+      "html": "<div class=\"ds-stat-pill\"><span class=\"ds-stat-label\">Flips</span><span class=\"ds-stat-value\">0</span></div>",
+      "css": ".ds-stat-pill { display: flex; flex-direction: column; align-items: center; padding: 6px 16px; background: #fce7f3; border: 2px solid #fbcfe8; border-radius: 12px; text-align: center; } .ds-stat-label { font-family: Quicksand, sans-serif; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #ec4899; } .ds-stat-value { font-family: Margarine, cursive; font-size: 1.5rem; color: #db2777; line-height: 1.1; }"
+    },
+    {
+      "name": "Audio Toggle",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Icon-only mute control in header.",
+      "html": "<button class=\"ds-audio-toggle\" title=\"Mute/Unmute\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"#4f46e5\" stroke-width=\"2.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z\"/></svg></button>",
+      "css": ".ds-audio-toggle { display: flex; align-items: center; justify-content: center; padding: 10px; background: #e0e7ff; border: 2px solid #c7d2fe; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); cursor: pointer; transition: transform 0.2s ease-out, background 0.15s ease-out; } .ds-audio-toggle:hover { background: #c7d2fe; transform: scale(1.05); } .ds-audio-toggle:active { transform: scale(0.95); } .ds-audio-toggle:focus-visible { outline: 3px solid #4f46e5; outline-offset: 2px; }"
+    },
+    {
+      "name": "Victory Card",
+      "kind": "card",
+      "refersTo": "theme-card",
+      "description": "Completion modal with gold border and stat summary.",
+      "html": "<div class=\"ds-victory-card\"><h2 class=\"ds-victory-title\">Amazing Job!</h2><p class=\"ds-victory-sub\">Puzzle Completed Successfully</p><div class=\"ds-victory-stats\"><span>Theme: Safari</span></div></div>",
+      "css": ".ds-victory-card { background: #ffffff; border: 4px solid #eab308; border-radius: 24px; padding: 24px 40px; max-width: 28rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); } .ds-victory-title { font-family: Margarine, cursive; font-size: 2rem; color: #eab308; margin: 0 0 4px; } .ds-victory-sub { font-family: Quicksand, sans-serif; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #818cf8; margin: 0 0 24px; } .ds-victory-stats { background: #eef2ff; border: 2px solid #e0e7ff; border-radius: 16px; padding: 12px 16px; text-align: left; font-family: Quicksand, sans-serif; font-weight: 700; font-size: 0.875rem; color: #312e81; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Encouraging Playroom",
+    "overview": "Animal Memory Match looks and feels like a bright, patient playroom where a child can explore at their own pace. The HTML shell handles navigation, setup, and celebration; the canvas handles the tactile card game with procedural gradients, particles, and speech. Visual energy comes from emoji, rounded shapes, and saturated accent moments—not from stacking every kids-app trope at once.\n\nThe system is warm and playful without becoming corporate edtech. Future polish should sharpen craft in the canvas and typography while shedding reflex patterns that make the shell feel templated.",
+    "keyCharacteristics": [
+      "Dual-surface architecture: Tailwind HTML for menus/HUD; canvas for cards, particles, and theme-specific card-back gradients.",
+      "Indigo spine + rainbow accents: Indigo-600 anchors navigation and copy; pink/teal/amber stat pills and per-theme canvas gradients add color in controlled bursts.",
+      "Bubbly but tappable: Generous rounded-2xl/rounded-3xl radii, border-4 outlines, and active:scale-95 press feedback for small fingers.",
+      "Encouragement-first copy: Margarine display voice for headlines; Quicksand bold for body.",
+      "Depth via shadow + blur, not flat cards only: shadow-xl/shadow-2xl on panels; selective backdrop-blur on overlays."
+    ],
+    "rules": [
+      { "name": "The One Rainbow Rule", "body": "A full yellow-orange-pink gradient is reserved for the primary play path (Let's Play, Play Again). Secondary actions use solid or two-stop gradients.", "section": "colors" },
+      { "name": "The Canvas Color Rule", "body": "Theme-specific card-back gradients live on the canvas only. The HTML shell stays on the indigo spine.", "section": "colors" },
+      { "name": "The Two-Voice Rule", "body": "Margarine is for moments of delight (titles, CTAs, scores). Quicksand is for reading and scanning. Never set body paragraphs in Margarine.", "section": "typography" },
+      { "name": "The Blur-With-Purpose Rule", "body": "backdrop-blur appears on the header, setup overlay, and victory scrim—not on every child element.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep the indigo spine consistent across setup, HUD, and victory so the shell feels like one game, not twelve separate themes.",
+      "Do use Margarine only for delight moments and Quicksand for scannable text.",
+      "Do give every tappable control active:scale-95 and a minimum touch target of ~44px.",
+      "Do reserve the sunrise gradient CTA for the primary forward action on each screen.",
+      "Do put theme-specific color energy on canvas card backs where it reinforces the chosen adventure."
+    ],
+    "donts": [
+      "Don't use generic AI kids app aesthetics: soft pastel gradient backgrounds on every surface, identical bubbly card grids, glassmorphism headers, and rainbow gradient CTAs stacked on every screen.",
+      "Don't add corporate edtech dashboards with badges, streaks, or learning platform framing.",
+      "Don't create overstimulating sensory overload: too many simultaneous animations, sounds, and competing accent colors.",
+      "Don't put a rainbow gradient on every button—one hero CTA per view.",
+      "Don't add backdrop-blur decoratively to elements that don't separate layers.",
+      "Don't use uppercase for body copy or sentences—reserve it for HUD labels ≤4 words."
+    ]
+  }
+}
