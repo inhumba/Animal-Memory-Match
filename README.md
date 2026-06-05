@@ -10,11 +10,19 @@ Play the game in your browser — no install required:
 
 ## **✨ Features**
 
-* **🎮 4 Immersive Animal Themes:**  
+* **🎮 12 Immersive Themes:**  
   * 🦁 **Safari:** Lion, Zebra, Elephant, Giraffe, Monkey, Hippo, Tiger, Leopard, Rhino, Crocodile, Flamingo, Gorilla.  
   * 🦊 **Forest:** Bear, Fox, Squirrel, Owl, Deer, Bunny, Hedgehog, Raccoon, Wolf, Boar, Beaver, Badger.  
   * 🐬 **Ocean:** Whale, Dolphin, Octopus, Shark, Turtle, Fish, Crab, Seal, Blowfish, Lobster, Shrimp, Squid.  
   * 🐶 **Pets:** Dog, Cat, Hamster, Bunny, Parrot, Fish, Turtle, Unicorn, Mouse, Lizard, Pig, Chicken.  
+  * 👕 **Clothing:** Shirt, Dress, Pants, Coat, Socks, Sneaker, Hat, Crown, Scarf, Gloves, Sunglasses, Boot.  
+  * 🍎 **Fruit:** Apple, Banana, Grapes, Orange, Watermelon, Strawberry, Cherry, Pineapple, Mango, Peach, Lemon, Kiwi.  
+  * 🚀 **Vehicles:** Rocket, Helicopter, Train, Car, Bicycle, Ship, Ambulance, Firetruck, Police Car, Bus, Tractor, Airplane.  
+  * 🦖 **Fantasy:** T-Rex, Dinosaur, Unicorn, Dragon, Castle, Fairy, Mermaid, Wizard, Ghost, Egg, Volcano, Magic Ball.  
+  * 🧸 **Toys:** Teddy Bear, Balloon, Kite, Soccer Ball, Basketball, Art Paint, Video Game, Puzzle, Dice, Skateboard, Guitar, Saxophone.  
+  * 🌈 **Nature:** Sun, Rain, Snowflake, Rainbow, Lightning, Cloud, Moon, Star, Mushroom, Wave, Clover, Fire.  
+  * 🦋 **Insects:** Butterfly, Ladybug, Bee, Ant, Spider, Caterpillar, Snail, Grasshopper, Mosquito, Scorpion, Web, Beetle.  
+  * 🍰 **Sweets:** Pizza, Burger, Fries, Hot Dog, Popcorn, Fried Egg, Donut, Cupcake, Ice Cream, Cake, Lollipop, Chocolate.  
 * **📈 4 Difficulty Levels:**  
   * **Easy:** 3 Pairs (![][image1] grid) — Perfect for toddlers.  
   * **Medium:** 6 Pairs (![][image2] grid) — Balanced fun.  

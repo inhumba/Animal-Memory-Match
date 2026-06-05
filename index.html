@@ -94,22 +94,54 @@
                     <h3 class="text-lg font-playful text-indigo-600 mb-3 flex items-center justify-center gap-2">
                         <span>✨</span> Theme Category <span>✨</span>
                     </h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                        <button onclick="selectTheme('safari')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-safari">
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button onclick="selectTheme('safari')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-safari">
                             <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦁</span>
                             <span class="font-bold text-indigo-700 text-sm md:text-base">Safari</span>
                         </button>
-                        <button onclick="selectTheme('forest')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-forest">
+                        <button onclick="selectTheme('forest')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-forest">
                             <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦊</span>
                             <span class="font-bold text-indigo-700 text-sm md:text-base">Forest</span>
                         </button>
-                        <button onclick="selectTheme('ocean')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-ocean">
+                        <button onclick="selectTheme('ocean')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-ocean">
                             <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🐬</span>
                             <span class="font-bold text-indigo-700 text-sm md:text-base">Ocean</span>
                         </button>
-                        <button onclick="selectTheme('pets')" class="theme-btn p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-pets">
+                        <button onclick="selectTheme('pets')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-pets">
                             <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🐶</span>
                             <span class="font-bold text-indigo-700 text-sm md:text-base">Pets</span>
+                        </button>
+                        <button onclick="selectTheme('clothing')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-clothing">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">👕</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Clothing</span>
+                        </button>
+                        <button onclick="selectTheme('fruit')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-fruit">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🍎</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Fruit</span>
+                        </button>
+                        <button onclick="selectTheme('vehicles')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-vehicles">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🚀</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Vehicles</span>
+                        </button>
+                        <button onclick="selectTheme('fantasy')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-fantasy">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦖</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Fantasy</span>
+                        </button>
+                        <button onclick="selectTheme('toys')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-toys">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🧸</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Toys</span>
+                        </button>
+                        <button onclick="selectTheme('nature')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-nature">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🌈</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Nature</span>
+                        </button>
+                        <button onclick="selectTheme('insects')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-insects">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🦋</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Insects</span>
+                        </button>
+                        <button onclick="selectTheme('sweets')" class="theme-btn w-[calc(50%-0.5rem)] sm:w-[calc(33.33%-0.75rem)] md:w-36 lg:w-40 p-3 md:p-4 rounded-2xl border-4 border-indigo-100 bg-indigo-50 hover:bg-indigo-100/50 hover:border-indigo-400 text-center transition-all group active:scale-95 transform shadow-md" id="theme-sweets">
+                            <span class="text-4xl md:text-5xl block mb-1 group-hover:scale-110 transition-transform">🍭</span>
+                            <span class="font-bold text-indigo-700 text-sm md:text-base">Sweets</span>
                         </button>
                     </div>
                 </div>
@@ -212,7 +244,15 @@
             safari: ['🦁', '🦓', '🐘', '🦒', '🐒', '🦛', '🐯', '🐆', '🦏', '🐊', '🦩', '🦍'],
             forest: ['🐻', '🦊', '🐿️', '🦉', '🦌', '🐰', '🦔', '🦝', '🐺', '🐗', '🦫', '🦡'],
             ocean: ['🐳', '🐬', '🐙', '🦈', '🐢', '🐠', '🦀', '🦭', '🐡', '🦞', '🦐', '🦑'],
-            pets: ['🐶', '🐱', '🐹', '🐰', '🦜', '🐟', '🐢', '🦄', '🐭', '🦎', '🐷', '🐔']
+            pets: ['🐶', '🐱', '🐹', '🐰', '🦜', '🐟', '🐢', '🦄', '🐭', '🦎', '🐷', '🐔'],
+            clothing: ['👕', '👗', '👖', '🧥', '🧦', '👟', '🎩', '👑', '🧣', '🧤', '🕶️', '👢'],
+            fruit: ['🍎', '🍌', '🍇', '🍊', '🍉', '🍓', '🍒', '🍍', '🥭', '🍑', '🍋', '🥝'],
+            vehicles: ['🚀', '🚁', '🚂', '🚗', '🚲', '🚢', '🚑', '🚒', '🚓', '🚌', '🚜', '✈️'],
+            fantasy: ['🦖', '🦕', '🦄', '🐉', '🏰', '🧚‍♀️', '🧜‍♀️', '🧙‍♂️', '👻', '🥚', '🌋', '🔮'],
+            toys: ['🧸', '🎈', '🪁', '⚽', '🏀', '🎨', '🎮', '🧩', '🎲', '🛹', '🎸', '🎷'],
+            nature: ['☀️', '🌧️', '❄️', '🌈', '⚡', '☁️', '🌙', '🌟', '🍄', '🌊', '🍀', '🔥'],
+            insects: ['🦋', '🐞', '🐝', '🐜', '🕷️', '🐛', '🐌', '🦗', '🦟', '🦂', '🕸️', '🪲'],
+            sweets: ['🍕', '🍔', '🍟', '🌭', '🍿', '🍳', '🍩', '🧁', '🍦', '🍰', '🍭', '🍫']
         };
 
         // Complete Emoji-to-Kid-Friendly-Word Mapping
@@ -224,7 +264,16 @@
             '🐳': 'Whale', '🐬': 'Dolphin', '🐙': 'Octopus', '🦈': 'Shark', '🐢': 'Turtle', '🐠': 'Fish', '🦀': 'Crab', '🦭': 'Seal',
             '🐡': 'Blowfish', '🦞': 'Lobster', '🦐': 'Shrimp', '🦑': 'Squid',
             '🐶': 'Dog', '🐱': 'Cat', '🐹': 'Hamster', '🦜': 'Parrot', '🐟': 'Fish', '🦄': 'Unicorn',
-            '🐭': 'Mouse', '🦎': 'Lizard', '🐷': 'Pig', '🐔': 'Chicken'
+            '🐭': 'Mouse', '🦎': 'Lizard', '🐷': 'Pig', '🐔': 'Chicken',
+            '👕': 'Shirt', '👗': 'Dress', '👖': 'Pants', '🧥': 'Coat', '🧦': 'Socks', '👟': 'Sneaker',
+            '🎩': 'Hat', '👑': 'Crown', '🧣': 'Scarf', '🧤': 'Gloves', '🕶️': 'Sunglasses', '👢': 'Boot',
+            '🍎': 'Apple', '🍌': 'Banana', '🍇': 'Grapes', '🍊': 'Orange', '🍉': 'Watermelon', '🍓': 'Strawberry', '🍒': 'Cherry', '🍍': 'Pineapple', '🥭': 'Mango', '🍑': 'Peach', '🍋': 'Lemon', '🥝': 'Kiwi',
+            '🚀': 'Rocket', '🚁': 'Helicopter', '🚂': 'Train', '🚗': 'Car', '🚲': 'Bicycle', '🚢': 'Ship', '🚑': 'Ambulance', '🚒': 'Firetruck', '🚓': 'Police Car', '🚌': 'Bus', '🚜': 'Tractor', '✈️': 'Airplane',
+            '🦖': 'T-Rex', '🦕': 'Dinosaur', '🐉': 'Dragon', '🏰': 'Castle', '🧚‍♀️': 'Fairy', '🧜‍♀️': 'Mermaid', '🧙‍♂️': 'Wizard', '👻': 'Ghost', '🥚': 'Egg', '🌋': 'Volcano', '🔮': 'Magic Ball',
+            '🧸': 'Teddy Bear', '🎈': 'Balloon', '🪁': 'Kite', '⚽': 'Soccer Ball', '🏀': 'Basketball', '🎨': 'Art Paint', '🎮': 'Video Game', '🧩': 'Puzzle', '🎲': 'Dice', '🛹': 'Skateboard', '🎸': 'Guitar', '🎷': 'Saxophone',
+            '☀️': 'Sun', '🌧️': 'Rain', '❄️': 'Snowflake', '🌈': 'Rainbow', '⚡': 'Lightning', '☁️': 'Cloud', '🌙': 'Moon', '🌟': 'Star', '🍄': 'Mushroom', '🌊': 'Wave', '🍀': 'Clover', '🔥': 'Fire',
+            '🦋': 'Butterfly', '🐞': 'Ladybug', '🐝': 'Bee', '🐜': 'Ant', '🕷️': 'Spider', '🐛': 'Caterpillar', '🐌': 'Snail', '🦗': 'Grasshopper', '🦟': 'Mosquito', '🦂': 'Scorpion', '🕸️': 'Web', '🪲': 'Beetle',
+            '🍕': 'Pizza', '🍔': 'Burger', '🍟': 'Fries', '🌭': 'Hot Dog', '🍿': 'Popcorn', '🍳': 'Fried Egg', '🍩': 'Donut', '🧁': 'Cupcake', '🍦': 'Ice Cream', '🍰': 'Cake', '🍭': 'Lollipop', '🍫': 'Chocolate'
         };
 
         const GAME_CONFIGS = {
@@ -855,9 +904,36 @@
             } else if (selectedTheme === 'ocean') {
                 grad.addColorStop(0, '#06b6d4'); // Bright Cyan
                 grad.addColorStop(1, '#4f46e5'); // Rich Deep Royal Blue
-            } else {
+            } else if (selectedTheme === 'pets') {
                 grad.addColorStop(0, '#f43f5e'); // Rose gold peach
                 grad.addColorStop(1, '#fbbf24'); // Sunny gold
+            } else if (selectedTheme === 'clothing') {
+                grad.addColorStop(0, '#a855f7'); // Violet
+                grad.addColorStop(1, '#6366f1'); // Indigo
+            } else if (selectedTheme === 'fruit') {
+                grad.addColorStop(0, '#84cc16'); // Lime Green
+                grad.addColorStop(1, '#f59e0b'); // Warm Amber / Orange
+            } else if (selectedTheme === 'vehicles') {
+                grad.addColorStop(0, '#ef4444'); // Red
+                grad.addColorStop(1, '#f97316'); // Orange
+            } else if (selectedTheme === 'fantasy') {
+                grad.addColorStop(0, '#d946ef'); // Fuchsia
+                grad.addColorStop(1, '#c084fc'); // Purple
+            } else if (selectedTheme === 'toys') {
+                grad.addColorStop(0, '#0d9488'); // Teal
+                grad.addColorStop(1, '#facc15'); // Yellow
+            } else if (selectedTheme === 'nature') {
+                grad.addColorStop(0, '#38bdf8'); // Sky Blue
+                grad.addColorStop(1, '#f472b6'); // Pink
+            } else if (selectedTheme === 'insects') {
+                grad.addColorStop(0, '#a3e635'); // Lime
+                grad.addColorStop(1, '#047857'); // Emerald Green
+            } else if (selectedTheme === 'sweets') {
+                grad.addColorStop(0, '#ff4f81'); // Strawberry Pink
+                grad.addColorStop(1, '#ffc0a9'); // Cream Peach
+            } else {
+                grad.addColorStop(0, '#ec4899'); // Pink
+                grad.addColorStop(1, '#fb7185'); // Rose
             }
 
             ctx.fillStyle = grad;
